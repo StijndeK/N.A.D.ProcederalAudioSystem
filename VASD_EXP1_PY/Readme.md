@@ -2,7 +2,8 @@
 The first VASD prototype. EXP1 allows the user to quickly test a horizontal non-linear system that doesn't require any input (doesn't adapt to game parameters). Export audio directly into the folder with specific file names and they will automatically be sequenced based on the given options.
 
 ## Example
-https://streamable.com/wmomb
+Applied to Rookery
+- [EXP1](https://streamable.com/wmomb)
 
 ## Instructions
 Place audio files in the same folder as the python program. Set the export location of the DAW to this folder to allow for quick testing and prototyping of the non-linear audio system.
