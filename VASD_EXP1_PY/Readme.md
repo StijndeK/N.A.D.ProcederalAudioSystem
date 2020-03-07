@@ -19,7 +19,7 @@ is the first track and can loop or transition to track 2 or 4
 | ------------- |:-------------:| -----:|
 | quick testing | specific file naming | Other non-linear audio techniques |
 | | Limited to 1 technique |   Differing game states |
-| | | No added context, both visual and interactive |
+| | Clicks in transitions | No added context, both visual and interactive |
 | | | No clear overview |
 | | | No chance percentages |
 | | | No fallback |
