@@ -5,6 +5,7 @@ import random
 import sys, select
 import time
 
+print ("Welcome!")
 print ("Press return to stop audio playing")
 
 # initialise 
@@ -14,7 +15,7 @@ entryList = [] # all different audio files
 currentTrack = []
 loopDuration = 0
 
-# set functions
+# FUNCTIONS
 def playTrack(name):
     wave_obj = sa.WaveObject.from_wave_file(name)
     print("playing: " + name)
@@ -63,6 +64,7 @@ def play():
         if i == [sys.stdin]: 
             break
 
+# LOAD FILES
 # get al wav files in a list
 print("Loaded audio loops:")
 for root, dirs, files in os.walk("."):
@@ -70,6 +72,7 @@ for root, dirs, files in os.walk("."):
         if filename.endswith('.wav'): 
             print(" - " + filename)
             nameList.append(filename)
+#NOTE: hier zijn dan alle files ingeladen
 
 # convert tot 16 bit to make sure audio is playable and copy the audio so the source files are safe
 for name in nameList:
@@ -78,7 +81,10 @@ for name in nameList:
     soundfile.write(newName, data, samplerate, subtype='PCM_16')
     newNameList.append(newName)
 
+#NOTE: hier zijn dan alle files in 16 bit
 # set all entrys
+#NOTE: hier moet dan een loop komen die checkt bij welke laag de audio hoort. Die moet dan vervolgens verder aan de lijst worden geplakt
+#NOTE: de play moet per laag gebeuren, dus bijv per laag een play aanroepen
 for name in newNameList:
     # set possible transitions
     possibleTransitions = []
@@ -94,9 +100,11 @@ for name in newNameList:
     # add entry
     entryList.append([name, name[4], possibleTransitions])
 
+# LOOP
 # set duration of loop
 loopDuration = calculateTime()
 
+# main game loop
 while True:
     while True:
         i = input("Type 'p' to play or 'q' to quit: ")
@@ -109,6 +117,7 @@ while True:
         print("bye!")
         break
 
+# EXIT
 # remove created files
 for name in newNameList:
     os.remove(name)
