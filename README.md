@@ -3,4 +3,4 @@
 
 ## Rookery
 All experiments get applied to project Rookery, a currently being developed game. Prototypes will include a link with the application of the prototype to the project.
-[EXP1](https://streamable.com/wmomb)
+- [EXP1](https://streamable.com/wmomb)
