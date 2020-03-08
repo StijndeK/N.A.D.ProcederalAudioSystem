@@ -3,7 +3,7 @@ The second VASD prototype. EXP2 builds further on [EXP1](https://github.com/Stij
 
 ## Example
 Applied to Rookery
-- [EXP2](https://streamable.com/wmomb)
+- [EXP2](https://streamable.com/reu4v)
 
 ## Instructions
 Place audio files in the same folder as the python program. Set the export location of the DAW to this folder to allow for quick testing and prototyping of the non-linear audio system.
