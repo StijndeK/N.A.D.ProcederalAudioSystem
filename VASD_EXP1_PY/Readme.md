@@ -19,11 +19,11 @@ For example:
 is the first track and can loop or transition to track 2 or 4
 
 ## Reflection
-| Positives    | Drawback       | Missing  |
+| Improvements    | Drawback       | Missing  |
 | ------------- |:-------------:| -----:|
-| quick testing | specific file naming | Other non-linear audio techniques |
-| | Limited to 1 technique |   Differing game states |
-| | Clicks in transitions | No added context, both visual and interactive |
-| | | No clear overview |
-| | | No chance percentages |
-| | | No fallback |
+| quick testing | specific file naming | Vertical layering |
+| | Clicks in transitions | Adaption to game parameters |
+| | | Added context, both visual and interactive |
+| | | Clear overview |
+| | | Chance percentages |
+| | | Transition techniques |

@@ -44,14 +44,12 @@ def calculateTime():
 def play():
     print ("Now playing")
     first = [True, True, True, True, True, True, True, True, True, True] #TODO: create a dynamic checking system
-    # play loop
     while True:
         for layerEntryList in newEntryList:
             # set the number of the current layer
             currentEntryNumber = int(layerEntryList[0][3]) - 1
-            # choose which track to play
+            # choose what track to play
             if first[currentEntryNumber]:
-                # start by playing first track
                 transitionValue = 1
                 first[currentEntryNumber] = 0
             else:
@@ -65,11 +63,8 @@ def play():
             playTrack(currentTrack[0])
             # set new transition options
             currentTransitionOptions[currentEntryNumber] = currentTrack[2]
-        # wait till tracks are finished
+        # wait till tracks have finished playing
         time.sleep(loopDuration)
-
-
-
         # check if return is pressed        
         i,o,e = select.select([sys.stdin],[],[],0.0001)
         if i == [sys.stdin]: 
@@ -91,7 +86,7 @@ for name in nameList:
     soundfile.write(newName, data, samplerate, subtype='PCM_16')
     newNameList.append(newName)
 
-# set all entrys
+# set all entrys in list
 for name in newNameList:
     # set possible transitions
     possibleTransitions = []
@@ -105,15 +100,16 @@ for name in newNameList:
             break
     # add entry
     entryList.append([name, name[4], possibleTransitions , name[6]]) # filename, loopnumber, [transition possibilities], vertical layer number
+
     # update layerAmount
     if int(name[6]) > layerAmount:
         layerAmount = int(name[6])
 
-# divide into 2d array
+# divide entry list into 2d array ([vertical layer],[vertical layer],..)
+# TODO: do this immediatly when setting al entrys
 for x in range(layerAmount):
     newEntryList.append([])
     currentTransitionOptions.append([]) # initialise empty array to hold transition options
-    # TODO: convert to simple numpy function
     for entry in entryList:
         if int(entry[3]) == (x + 1):
             newEntryList[x].append(entry)
