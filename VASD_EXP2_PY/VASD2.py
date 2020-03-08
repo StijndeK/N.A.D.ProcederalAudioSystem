@@ -4,6 +4,7 @@ import soundfile
 import random
 import sys, select
 import time
+import glob
 
 print ("Welcome!")
 print ("Press return to stop audio playing")
@@ -14,17 +15,19 @@ newNameList = [] # to contain all new wav files
 entryList = [] # all different audio files
 currentTrack = []
 loopDuration = 0
-layerNumber = 0
+layerAmount = 0
+newEntryList = []
+currentTransitionOptions = []
+
+# on start remove created files incase they didnt get removed on destroy
+for filename in glob.glob("./new_*"):
+    os.remove(filename) 
 
 # FUNCTIONS
 def playTrack(name):
     wave_obj = sa.WaveObject.from_wave_file(name)
     print("playing: " + name)
     play_obj = wave_obj.play()
-
-    # TODO: change this into wait a certain time (this does require a bpm input and)
-    time.sleep(loopDuration)
-    # play_obj.wait_done()
 
 def calculateTime():
     while True:
@@ -40,24 +43,33 @@ def calculateTime():
 
 def play():
     print ("Now playing")
-    first = True
+    first = [True, True, True, True, True, True, True, True, True, True] #TODO: create a dynamic checking system
     # play loop
     while True:
-        # choose which track to play
-        if first:
-            # start by playing first track
-            transitionValue = 1
-            first = 0
-        else:
-            transitionValue = currentTransitionOptions[random.randint(1, len(currentTransitionOptions)) - 1]
-        # find track
-        for entry in entryList:
-            if int(entry[1]) == int(transitionValue):
-                currentTrack = entry
-                break
-        # play track
-        playTrack(currentTrack[0])
-        currentTransitionOptions = currentTrack[2]
+        for layerEntryList in newEntryList:
+            # set the number of the current layer
+            currentEntryNumber = int(layerEntryList[0][3]) - 1
+            # choose which track to play
+            if first[currentEntryNumber]:
+                # start by playing first track
+                transitionValue = 1
+                first[currentEntryNumber] = 0
+            else:
+                transitionValue = currentTransitionOptions[currentEntryNumber][random.randint(1, len(currentTransitionOptions[currentEntryNumber])) - 1]
+            # find track
+            for entry in layerEntryList:
+                if int(entry[1]) == int(transitionValue):
+                    currentTrack = entry
+                    break
+            # play track
+            playTrack(currentTrack[0])
+            # set new transition options
+            currentTransitionOptions[currentEntryNumber] = currentTrack[2]
+        # wait till tracks are finished
+        time.sleep(loopDuration)
+
+
+
         # check if return is pressed        
         i,o,e = select.select([sys.stdin],[],[],0.0001)
         if i == [sys.stdin]: 
@@ -80,7 +92,6 @@ for name in nameList:
     newNameList.append(newName)
 
 # set all entrys
-#NOTE: hier moet dan een loop komen die checkt bij welke laag de audio hoort. Die moet dan vervolgens verder aan de lijst worden geplakt
 for name in newNameList:
     # set possible transitions
     possibleTransitions = []
@@ -92,15 +103,24 @@ for name in newNameList:
             tempName = tempName[:-1]
         else:
             break
-    
     # add entry
-    entryList.append([name, name[4], possibleTransitions, layerNumber])
+    entryList.append([name, name[4], possibleTransitions , name[6]]) # filename, loopnumber, [transition possibilities], vertical layer number
+    # update layerAmount
+    if int(name[6]) > layerAmount:
+        layerAmount = int(name[6])
+
+# divide into 2d array
+for x in range(layerAmount):
+    newEntryList.append([])
+    currentTransitionOptions.append([]) # initialise empty array to hold transition options
+    # TODO: convert to simple numpy function
+    for entry in entryList:
+        if int(entry[3]) == (x + 1):
+            newEntryList[x].append(entry)
 
 # LOOP
 # set duration of loop
 loopDuration = calculateTime()
-
-#NOTE: de play moet per laag gebeuren, dus bijv per laag een play aanroepen
 # main game loop
 while True:
     while True:
@@ -115,7 +135,7 @@ while True:
         break
 
 # EXIT
-# remove created files
+# on destroy remove created files
 for name in newNameList:
     os.remove(name)
 
