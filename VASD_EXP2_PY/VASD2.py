@@ -14,6 +14,7 @@ newNameList = [] # to contain all new wav files
 entryList = [] # all different audio files
 currentTrack = []
 loopDuration = 0
+layerNumber = 0
 
 # FUNCTIONS
 def playTrack(name):
@@ -39,21 +40,19 @@ def calculateTime():
 
 def play():
     print ("Now playing")
-    # start by playing first track
-    for entry in entryList:
-        if int(entry[1]) == 1:
-            currentTrack = entry
-            break
-    playTrack(currentTrack[0])
-    currentTransitionOptions = currentTrack[2]
+    first = True
     # play loop
     while True:
         # choose which track to play
-        transitionValue = currentTransitionOptions[random.randint(1, len(currentTransitionOptions)) - 1]
+        if first:
+            # start by playing first track
+            transitionValue = 1
+            first = 0
+        else:
+            transitionValue = currentTransitionOptions[random.randint(1, len(currentTransitionOptions)) - 1]
         # find track
         for entry in entryList:
-            # check if first track
-            if entry[1] == transitionValue:
+            if int(entry[1]) == int(transitionValue):
                 currentTrack = entry
                 break
         # play track
@@ -72,7 +71,6 @@ for root, dirs, files in os.walk("."):
         if filename.endswith('.wav'): 
             print(" - " + filename)
             nameList.append(filename)
-#NOTE: hier zijn dan alle files ingeladen
 
 # convert tot 16 bit to make sure audio is playable and copy the audio so the source files are safe
 for name in nameList:
@@ -81,10 +79,8 @@ for name in nameList:
     soundfile.write(newName, data, samplerate, subtype='PCM_16')
     newNameList.append(newName)
 
-#NOTE: hier zijn dan alle files in 16 bit
 # set all entrys
 #NOTE: hier moet dan een loop komen die checkt bij welke laag de audio hoort. Die moet dan vervolgens verder aan de lijst worden geplakt
-#NOTE: de play moet per laag gebeuren, dus bijv per laag een play aanroepen
 for name in newNameList:
     # set possible transitions
     possibleTransitions = []
@@ -98,12 +94,13 @@ for name in newNameList:
             break
     
     # add entry
-    entryList.append([name, name[4], possibleTransitions])
+    entryList.append([name, name[4], possibleTransitions, layerNumber])
 
 # LOOP
 # set duration of loop
 loopDuration = calculateTime()
 
+#NOTE: de play moet per laag gebeuren, dus bijv per laag een play aanroepen
 # main game loop
 while True:
     while True:
