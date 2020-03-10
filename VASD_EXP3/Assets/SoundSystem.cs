@@ -7,7 +7,7 @@ using FMOD;
 using FMODUnity;
 
 
-public class FMODTEST : MonoBehaviour
+public class SoundSystem : MonoBehaviour
 {
     public List<string> fileNames; // list containing al wav files
 
@@ -17,7 +17,7 @@ public class FMODTEST : MonoBehaviour
 
     void Start()
     {
-        // get acces to fmod api
+        // acced FMOD
         corSystem = FMODUnity.RuntimeManager.CoreSystem;
         uint version;
         corSystem.getVersion(out version);
@@ -25,36 +25,36 @@ public class FMODTEST : MonoBehaviour
         // create channel group
         corSystem.createChannelGroup("master", out channelgroup);
 
+        // load all files
         ReadFiles();
+        print("Loaded files: ");
         for (int i = 0; i < fileNames.Count; i++)
         {
             print(fileNames[i]);
         }
 
-        // handle user input
+        // TODO: handle user input
+        int bpm = calculateTime();
 
-        // initialise game loop
-        playTrack(fileNames[0]);
-        playTrack(fileNames[3]);
+        // TODO: start the game loop
+        gameLoop();
     }
 
     void Update()
     {
-        
+        // TODO: run gameplay loop, statemachine
     }
 
     public void ReadFiles()
     {
-        // get all files and put them into a list
         DirectoryInfo dir = new DirectoryInfo("../BounceLocation");
-        FileInfo[] info = dir.GetFiles("*.*");
+        FileInfo[] info = dir.GetFiles("*.wav*");
         foreach (FileInfo f in info)
         {
             fileNames.Add(f.Name);
+            // TODO: put into a entry list and divide by layer
+            //entryList.append([name, name[4], possibleTransitions, name[6]])
         }
-
-        // put them into a entry list and divide by layer
-        //entryList.append([name, name[4], possibleTransitions, name[6]])
     }
 
     public void playTrack(string filename)
@@ -70,5 +70,17 @@ public class FMODTEST : MonoBehaviour
     {
         // get user input on bpm and amount of beats
         return 0;
+    }
+
+    private void gameLoop()
+    {
+        playTrack(fileNames[0]);
+        playTrack(fileNames[3]);
+        
+        // check for pause or stop
+        // For every layer:
+        //  play current files
+        //  decide what next files can be played
+        //  wait for the horizontal loops to finish and run again
     }
 }
