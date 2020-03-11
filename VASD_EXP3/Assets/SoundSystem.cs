@@ -11,6 +11,8 @@ public class SoundSystem : MonoBehaviour
     public ChannelGroup channelgroup;
     public Channel channel;
 
+    public bool playing = false;
+
     void Start()
     {
         // acced FMOD
@@ -32,13 +34,15 @@ public class SoundSystem : MonoBehaviour
         // TODO: handle user input
         int bpm = calculateTime();
 
-        // TODO: start the game loop
-        gameLoop();
+
     }
 
     void Update()
     {
         // TODO: run gameplay loop, statemachine
+
+        // TODO: start the game loop
+        gameLoop();
     }
 
     public void ReadFiles()
@@ -70,9 +74,21 @@ public class SoundSystem : MonoBehaviour
 
     private void gameLoop()
     {
-        playTrack(fileNames[0]);
-        playTrack(fileNames[3]);
-        
+        // check if needs to stop
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            print("exit gameLoop");
+        }
+
+        if (playing == false)
+        {
+            playTrack(fileNames[0]);
+            playTrack(fileNames[3]);
+            playing = true;
+        }
+
+        // if a certain time has passed: paying = false
+
         // check for pause or stop
         // For every layer:
         //  play current files
