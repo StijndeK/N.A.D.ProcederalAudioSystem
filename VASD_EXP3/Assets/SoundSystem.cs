@@ -9,20 +9,27 @@ public class SoundSystem : MonoBehaviour
 {
     // list containing al wav files
     public List<string> fileNames;
-    public List<List<string>> entryList = new List<List<string>>();
+    public List<List<List<string>>> entryList2 = new List<List<List<string>>>();
     // FMOD core API
     public FMOD.System corSystem;
     public ChannelGroup channelgroup;
     public Channel channel;
-    // playing bool
+    // playing/stopping check
     private bool playing;
+    private bool stopping;
     // string input
     private float bpm;
     public UnityEngine.UI.InputField inputField;
     public UnityEngine.UI.InputField inputField2;
-
+    int layerAmount;
+    // time
     bool startPlaying;
     float loopTime;
+    // transitioning
+    List<int> transitionValues = new List<int>();
+
+    // TODO: move print from terminal to player screen
+    // TODO: zou cool zijn om dit ook naar een schema te kunnen printen voor mn documentatie
 
     void Start()
     {
@@ -41,8 +48,10 @@ public class SoundSystem : MonoBehaviour
 
     void Update()
     {
+        // get info and start playloop 
         if (Input.GetKeyDown(KeyCode.Return))
         {
+            bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
             startPlaying = true;
         }
         if (startPlaying == true)
@@ -57,8 +66,6 @@ public class SoundSystem : MonoBehaviour
         FileInfo[] info = dir.GetFiles("*.wav*");
 
         int oldValue = 0;
-        int layerAmount = 0;
-
         foreach (FileInfo f in info)
         {
             fileNames.Add(f.Name);
@@ -72,15 +79,36 @@ public class SoundSystem : MonoBehaviour
         // initialise entrylist
         for (int i = 0; i < layerAmount; i++)
         {
-            entryList.Add(new List<string>());
+            entryList2.Add(new List<List<string>>());
+            transitionValues.Add(0);
         }
 
         // parse list
         print("loaded files: ");
         for (int i = 0; i < fileNames.Count; i++)
         {
-            entryList[int.Parse(fileNames[i][0].ToString()) - 1].Add(fileNames[i]);
             print(fileNames[i]);
+
+            // get transition possibilities for loop from filename
+            string possibleTransitions = "";
+            string tempName = fileNames[i].Remove(fileNames[i].Length - 4, 4);
+            while (true)
+            {
+                int number;
+                bool result = Int32.TryParse(tempName[tempName.Length - 1].ToString(), out number);
+                if (result)
+                {
+                    possibleTransitions += number.ToString();
+                    tempName = tempName.Remove(tempName.Length - 1, 1);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // pass name and transition possibilities per track to entry list
+            entryList2[int.Parse(fileNames[i][0].ToString()) - 1].Add(new List<string> { fileNames[i], possibleTransitions });
         }
     }
 
@@ -101,27 +129,34 @@ public class SoundSystem : MonoBehaviour
 
     private void gameLoop()
     {
-        // Get UI information (dit hooeft niet in update)
-        bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
-
-        // check if needs to stop
+        // pause / play
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            print("paused");
-            // TODO: actually stop the audio 
+            print("pause/play (on next horizontal cycle)");
+            stopping = !stopping;
         }
 
-        if (playing == false)
+        // play tracks
+        if (playing == false && stopping == false)
         {
-            // TODO: implement transition decision system
             loopTime = Time.time + bpm;
-            playTrack(entryList[0][0]);
-            playTrack(entryList[1][0]);
+            for (int i = 0; i < layerAmount; i++)
+            {
+                string currentTransitionOptions = entryList2[i][transitionValues[i]][1];
+
+                // get a random value as large as the amount of transition options for the file
+                int value = UnityEngine.Random.Range(1, (currentTransitionOptions.Length + 1));
+
+                // chose between the transition option by applying the random value to the string with options
+                transitionValues[i] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
+
+                // play track
+                playTrack(entryList2[i][transitionValues[i]][0]);
+            }
             playing = true;
         }
-        if (Time.time >= loopTime)
-        {
-            playing = false;
-        }
+
+        // check if looptime has passed and new track needs to be played/paused
+        playing &= Time.time < loopTime;
     }
 }
