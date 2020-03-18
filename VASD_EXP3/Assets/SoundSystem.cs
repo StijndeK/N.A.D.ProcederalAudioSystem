@@ -30,15 +30,15 @@ public class SoundSystem : MonoBehaviour
     // Button
     public Button playPauseButton;
     bool firstPress = true;
+    // spawner 
+    GameObject spawnerObject;
 
     // TODO: visualise how the data is loaded and parsed
 
     /* TODO:
-     * start / pause visual button
-     * background / hud
-     * visualise layers as boxes
-     * create moveable boxes
-     * highlight when box is being played
+        * add text to visualisation boxes
+        * make boxes moveable
+        * highlight when box is being played
     */
 
     public void buttonPressed()
@@ -60,6 +60,10 @@ public class SoundSystem : MonoBehaviour
 
     void Start()
     {
+        // spawner object reference
+        spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
+
+
         // acces FMOD
         corSystem = FMODUnity.RuntimeManager.CoreSystem;
         uint version;
@@ -73,6 +77,12 @@ public class SoundSystem : MonoBehaviour
 
         // UI listeners
         playPauseButton.onClick.AddListener(buttonPressed);
+
+        // create boxes
+        for (int i = 0; i < layerAmount; i++)
+        {
+            spawnerObject.GetComponent<spawner>().SpawnBox();
+        }
     }
 
 
