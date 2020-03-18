@@ -3,7 +3,7 @@ using System.IO;
 using UnityEngine;
 using FMOD;
 using System;
-using System.Linq;
+using UnityEngine.UI;
 
 public class SoundSystem : MonoBehaviour
 {
@@ -27,9 +27,36 @@ public class SoundSystem : MonoBehaviour
     float loopTime;
     // transitioning
     List<int> transitionValues = new List<int>();
+    // Button
+    public Button playPauseButton;
+    bool firstPress = true;
 
-    // TODO: move print from terminal to player screen
-    // TODO: zou cool zijn om dit ook naar een schema te kunnen printen voor mn documentatie
+    // TODO: visualise how the data is loaded and parsed
+
+    /* TODO:
+     * start / pause visual button
+     * background / hud
+     * visualise layers as boxes
+     * create moveable boxes
+     * highlight when box is being played
+    */
+
+    public void buttonPressed()
+    {
+        // start game on first
+        if (firstPress)
+        {
+            bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
+            startPlaying = true;
+            firstPress = false;
+        }
+        // pause
+        else
+        {
+            print("pause/play (on next horizontal cycle)");
+            stopping = !stopping;
+        }
+    }
 
     void Start()
     {
@@ -43,17 +70,14 @@ public class SoundSystem : MonoBehaviour
 
         // load all files
         ReadFiles();
+
+        // UI listeners
+        playPauseButton.onClick.AddListener(buttonPressed);
     }
 
 
     void Update()
     {
-        // get info and start playloop 
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
-            startPlaying = true;
-        }
         if (startPlaying == true)
         {
             gameLoop();
@@ -129,13 +153,6 @@ public class SoundSystem : MonoBehaviour
 
     private void gameLoop()
     {
-        // pause / play
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            print("pause/play (on next horizontal cycle)");
-            stopping = !stopping;
-        }
-
         // play tracks
         if (playing == false && stopping == false)
         {
