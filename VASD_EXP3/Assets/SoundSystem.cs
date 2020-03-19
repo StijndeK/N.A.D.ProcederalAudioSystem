@@ -32,12 +32,12 @@ public class SoundSystem : MonoBehaviour
     bool firstPress = true;
     // spawner 
     GameObject spawnerObject;
+    // boxtext
+    int boxText;
 
     // TODO: visualise how the data is loaded and parsed
 
     /* TODO:
-        * add text to visualisation boxes
-        * make boxes moveable
         * highlight when box is being played
     */
 
@@ -92,6 +92,12 @@ public class SoundSystem : MonoBehaviour
         {
             gameLoop();
         }
+    }
+
+    public int setBoxText()
+    {
+        boxText++;
+        return boxText;
     }
 
     public void ReadFiles()
