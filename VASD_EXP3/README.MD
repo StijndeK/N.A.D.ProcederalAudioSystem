@@ -5,7 +5,9 @@ The third VASD prototype. EXP3 builds further on the system created in [EXP2](ht
 Because of the need for more complex features, visual interfase and the eventual application of VASD on games, EXP3 is build in Unity using the [FMOD Core API](https://fmod.com/resources/documentation-api?version=2.0&page=core-guide.html). The FMOD API allows for the ability to keep prototyping relatively quickly with certain game-specific functionalities easily available. Unity allows for quicker prototyping, especially for the visual 2d interface. I do want to eventually port the program to C++ for maximal optimisation and to for example apply it to UE4.
 
 ## Example
-- to be added
+- video to be added
+
+![VASD_EXP3](https://user-images.githubusercontent.com/31696336/77181334-71e59c80-6acb-11ea-9d97-9d4fba40f43f.png)
 
 ## Instructions
 Place audio files in the 'bouncelocation' folder in the same folder as the unity project/build. Set the export location of the DAW to this folder to allow for quick testing and prototyping of the non-linear audio system. The amount of loops and the amount of layers are limited to 9 files (1 to 9). 
@@ -21,7 +23,6 @@ For example:
 2_1_NameAndOtherInformation_124.wav
 is the first track on the second layer and can loop or transition to track 2 or 4
  
-## Reflection
 ## Reflection
 | Improvements    | Drawback       | Missing  |
 | ------------- |:-------------:| -----:|
