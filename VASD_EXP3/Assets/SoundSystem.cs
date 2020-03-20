@@ -34,35 +34,18 @@ public class SoundSystem : MonoBehaviour
     GameObject spawnerObject;
     // boxtext
     int boxText;
-
-    // TODO: visualise how the data is loaded and parsed
+    // text output
+    public string textForOutput;
 
     /* TODO:
         * highlight when box is being played
+        * visualise how the data is loaded and parsed
     */
-
-    public void buttonPressed()
-    {
-        // start game on first
-        if (firstPress)
-        {
-            bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
-            startPlaying = true;
-            firstPress = false;
-        }
-        // pause
-        else
-        {
-            print("pause/play (on next horizontal cycle)");
-            stopping = !stopping;
-        }
-    }
 
     void Start()
     {
         // spawner object reference
         spawnerObject = GameObject.FindGameObjectWithTag("Spawner");
-
 
         // acces FMOD
         corSystem = FMODUnity.RuntimeManager.CoreSystem;
@@ -91,6 +74,23 @@ public class SoundSystem : MonoBehaviour
         if (startPlaying == true)
         {
             gameLoop();
+        }
+    }
+
+    public void buttonPressed()
+    {
+        // start game on first
+        if (firstPress)
+        {
+            bpm = calculateTime(float.Parse(inputField.text), float.Parse(inputField2.text));
+            startPlaying = true;
+            firstPress = false;
+        }
+        // pause
+        else
+        {
+            print("pause/play (on next horizontal cycle)");
+            stopping = !stopping;
         }
     }
 
@@ -125,9 +125,11 @@ public class SoundSystem : MonoBehaviour
 
         // parse list
         print("loaded files: ");
+        textForOutput = textForOutput + "loaded files: "; 
         for (int i = 0; i < fileNames.Count; i++)
         {
             print(fileNames[i]);
+            textForOutput = textForOutput + "\n" + fileNames[i];
 
             // get transition possibilities for loop from filename
             string possibleTransitions = "";

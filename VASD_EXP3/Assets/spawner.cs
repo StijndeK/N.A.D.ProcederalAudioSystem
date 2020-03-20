@@ -6,14 +6,14 @@ using UnityEngine.UI;
 public class spawner : MonoBehaviour
 {
     public GameObject toBeSpawned;
-    int spawnPositionY = -300;
+    int spawnPositionY = -200;
 
     // TODO: scaling
 
     public void SpawnBox()
     {
-        GameObject Box = Instantiate(toBeSpawned, new Vector3(-500, spawnPositionY, 0), Quaternion.identity) as GameObject;
+        GameObject Box = Instantiate(toBeSpawned, new Vector3(220, spawnPositionY, 0), Quaternion.identity) as GameObject;
         Box.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
-        spawnPositionY = spawnPositionY + 200;
+        spawnPositionY = spawnPositionY + 120;
     }
 }
