@@ -7,7 +7,7 @@ Because of the need for more complex features, visual interfase and the eventual
 ## Example
 - video to be added
 
-![VASD_EXP3](https://user-images.githubusercontent.com/31696336/77181334-71e59c80-6acb-11ea-9d97-9d4fba40f43f.png)
+<img width="696" alt="VASD_EXP3PIC" src="https://user-images.githubusercontent.com/31696336/77223209-b5d3b280-6b5a-11ea-9751-1fc4ef60e58a.png">
 
 ## Instructions
 Place audio files in the 'bouncelocation' folder in the same folder as the unity project/build. Set the export location of the DAW to this folder to allow for quick testing and prototyping of the non-linear audio system. The amount of loops and the amount of layers are limited to 9 files (1 to 9). 
