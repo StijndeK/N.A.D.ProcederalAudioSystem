@@ -3,6 +3,8 @@ The fourth VASD prototype. EXP4 builds further on [EXP3](https://github.com/Stij
 
 ## Example
 
+<img width="713" alt="VASD_EXP4_Screencap" src="https://user-images.githubusercontent.com/31696336/78155827-3c7f6e00-743e-11ea-8056-8b0cbc38af06.png">
+
 ## Instructions
 Place audio files in the 'bouncelocation' folder in the same folder as the unity project/build. Set the export location of the DAW to this folder to allow for quick testing and prototyping of the non-linear audio system. The amount of loops and the amount of layers are limited to 9 files (1 to 9). Move layers to either side of a 'parameter line' to set them to the specific parameter value.
 
