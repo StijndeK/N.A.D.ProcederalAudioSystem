@@ -10,7 +10,6 @@ public class Mover : MonoBehaviour
          * relative scaling
          * colliders
     */
-
     void Update()
     {
         // check if box is pressed 
@@ -28,6 +27,7 @@ public class Mover : MonoBehaviour
         // stop movestate when mouse is released
         if (Input.GetMouseButtonUp(0))
         {
+            
             moveState = false;
         }
         // set the box position to mouse position during movestate

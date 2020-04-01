@@ -36,6 +36,11 @@ public class SoundSystem : MonoBehaviour
     int boxText;
     // text output
     public string textForOutput;
+    // Parameters
+    public Slider parameterSettingSlider;
+    private List<int> parameterX = new List<int>();
+
+    public Transform lineTransform;
 
     /* TODO:
         * highlight when box is being played
@@ -121,6 +126,7 @@ public class SoundSystem : MonoBehaviour
         {
             entryList2.Add(new List<List<string>>());
             transitionValues.Add(0);
+            parameterX.Add(0);
         }
 
         // parse list
@@ -169,6 +175,12 @@ public class SoundSystem : MonoBehaviour
         return duration;
     }
 
+
+    public void getLayerParameter(int layer, float position)
+    {
+        parameterX[layer] = (position >= lineTransform.position[0]) ? 1 : 0;
+    }
+
     private void gameLoop()
     {
         // play tracks
@@ -185,8 +197,11 @@ public class SoundSystem : MonoBehaviour
                 // chose between the transition option by applying the random value to the string with options
                 transitionValues[i] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
 
-                // play track
-                playTrack(entryList2[i][transitionValues[i]][0]);
+                // play track if parameter is checked
+                if (parameterX[i] == (int)parameterSettingSlider.value)
+                {
+                    playTrack(entryList2[i][transitionValues[i]][0]);
+                }
             }
             playing = true;
         }
