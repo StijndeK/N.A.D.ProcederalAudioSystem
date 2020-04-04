@@ -125,6 +125,18 @@ dmypy.json
 .pyre/
 .DS_Store
 *.wav
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assets/inc
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assets/inc
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/inc
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assets/Gizmos
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assets/Gizmos
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/Gizmos
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assets/plugins
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assets/plugins
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/plugins
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Library
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Library
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Library
 VASD_EXP3/.vs/VASD_EXP3/xs/project-cache/Assembly-CSharp-Debug.json
 VASD_EXP3/.vs/VASD_EXP3/xs/project-cache/Assembly-CSharp-Editor-firstpass-Debug.json
 VASD_EXP3/.vs/VASD_EXP3/xs/project-cache/Assembly-CSharp-firstpass-Debug.json
@@ -9224,3 +9236,14 @@ VASD_EXP5/Library/ScriptAssemblies/BuiltinAssemblies.stamp
 VASD_EXP5/Library/ScriptMapper
 VASD_EXP5/Library/ShaderCache.db
 VASD_EXP5/Library/ShaderCache/EditorEncounteredVariants
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assembly-CSharp-Editor-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assembly-CSharp-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assembly-CSharp.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assembly-CSharp-Editor-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assembly-CSharp-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assembly-CSharp.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assembly-CSharp-Editor-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assembly-CSharp-firstpass.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assembly-CSharp.csproj
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/Avenir.ttc
+2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/Assets/Raw and SpriteSheets/UI assets.svg
