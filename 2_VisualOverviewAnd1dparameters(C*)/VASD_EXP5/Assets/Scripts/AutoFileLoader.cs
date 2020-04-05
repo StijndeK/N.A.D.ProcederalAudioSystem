@@ -5,8 +5,6 @@ using FMOD;
 using System;
 using UnityEngine.UI;
 
-// hier wil ik: het inladen in lijst en het zetten van bpm en beat amount
-
 public class AutoFileLoader : MonoBehaviour
 {
     // list containing al wav files
@@ -20,8 +18,23 @@ public class AutoFileLoader : MonoBehaviour
     public List<int> transitionValues = new List<int>();
     // text output
     public string textForOutput;
-    // Parameters
+    // Parameterss
     public List<int> parameterX = new List<int>();
+    // Folder location
+    public UnityEngine.UI.InputField inputField3;
+    public Button loadButton;
+    public string folderLocation = "../BounceLocation/";
+
+    private void Start()
+    {
+        loadButton.onClick.AddListener(loadButtonPressed);
+    }
+
+    void loadButtonPressed()
+    {
+        folderLocation = inputField3.text;
+        print("new path set to: " + folderLocation);
+    }
 
     public void ReadFiles()
     {

@@ -5,8 +5,6 @@ using FMOD;
 using System;
 using UnityEngine.UI;
 
-// initalising lists moet nu hier gebeuren of moet het halen uit de file loader
-
 public class SoundSystem : MonoBehaviour
 {
     // ---------------------------
@@ -34,15 +32,15 @@ public class SoundSystem : MonoBehaviour
     float loopTime;
     // transitioning
     List<int> transitionValues = new List<int>();
-    // Button
+    // Buttons
     public Button playButton;
-    public Button pauseButton;
     bool firstPress = true;
+    public Button pauseButton;
     // boxtext
     int boxText;
     // text output
     public string textForOutput;
-
+    
     /* TODO:
         * highlight when box is being played
         * visualise how the data is loaded and parsed
@@ -115,7 +113,7 @@ public class SoundSystem : MonoBehaviour
     public void playTrack(string filename)
     {
         Sound sound;
-        corSystem.createSound("../BounceLocation/" + filename, MODE.DEFAULT, out sound);
+        corSystem.createSound(FileLoaderObject.GetComponent<AutoFileLoader>().folderLocation + filename, MODE.DEFAULT, out sound);
         corSystem.playSound(sound, channelgroup, false, out channel);
 
         print("playing: " + filename);
@@ -138,7 +136,7 @@ public class SoundSystem : MonoBehaviour
                 transitionValues[i] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
 
                 // play track if parameter is checked
-                if (SequencerObject.GetComponent<SequencerSystem>().parameterX[i] == (int)SequencerObject.GetComponent<SequencerSystem>().parameterSettingSlider.value)
+                if (SequencerObject.GetComponent<SequencerSystem>().parameterX[i] == (int)SequencerObject.GetComponent<SequencerSystem>().parameterSettingSlider.value) 
                 {
                     playTrack(entryList2[i][transitionValues[i]][0]);
                 }
