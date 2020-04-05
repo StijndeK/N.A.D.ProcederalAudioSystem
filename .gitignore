@@ -125,6 +125,7 @@ dmypy.json
 .pyre/
 .DS_Store
 *.wav
+VASD_EXP6_Real
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assets/inc
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assets/inc
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/inc
@@ -9286,3 +9287,4 @@ VASD_EXP5/UnityEditor.TestRunner.csproj
 VASD_EXP5/UnityEditor.UI.csproj
 VASD_EXP5/UnityEngine.TestRunner.csproj
 VASD_EXP5/UnityEngine.UI.csproj
+*.jpg
