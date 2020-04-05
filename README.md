@@ -7,3 +7,5 @@ Experiments are applied to project Rookery, a game that is currently being devel
 - [EXP2](https://streamable.com/reu4v)
 - [EXP3](https://streamable.com/434ev)
 - [EXP4](https://streamable.com/wqf3h)
+- [EXP5](https://streamable.com/uvkjxm)
+
