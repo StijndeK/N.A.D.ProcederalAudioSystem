@@ -133,21 +133,20 @@ public class SoundSystem : MonoBehaviour
         if (playing == false && stopping == false)
         {
             loopTime = Time.time + bpm;
-            for (int i = 0; i < layerAmount; i++)
+            for (int layer = 0; layer < layerAmount; layer++)
             {
-                string currentTransitionOptions = entryList2[i][transitionValues[i]][1];
+                string currentTransitionOptions = entryList2[layer][transitionValues[layer]][1];
 
                 // get a random value as large as the amount of transition options for the file
                 int value = UnityEngine.Random.Range(1, (currentTransitionOptions.Length + 1));
 
                 // chose between the transition option by applying the random value to the string with options
-                transitionValues[i] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
+                transitionValues[layer] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
 
                 // play track if parameters (X & Y) are checked
-                if (SequencerObject.GetComponent<SequencerSystem>().parameters[0][i] == (int)SequencerObject.GetComponent<SequencerSystem>().parameterSettingSliderX.value && SequencerObject.GetComponent<SequencerSystem>().parameters[1][i] == (int)SequencerObject.GetComponent<SequencerSystem>().parameterSettingSliderY.value)
-                    //if (SequencerObject.GetComponent<SequencerSystem>().parameters[0][i] == (int)SequencerObject.GetComponent<SequencerSystem>().parameterSettingSliderX.value) 
+                if (SequencerObject.GetComponent<SequencerSystem>().CheckIfLayerShouldPlay(layer) == true)
                 {
-                    playTrack(entryList2[i][transitionValues[i]][0]);
+                    playTrack(entryList2[layer][transitionValues[layer]][0]);
                 }
             }
             playing = true;

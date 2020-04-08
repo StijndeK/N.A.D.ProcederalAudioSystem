@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Texter : MonoBehaviour
 {
     Text txt;
-    int boxNumber;
+    public int boxNumber;
 
     GameObject soundSystemObject;
     GameObject sequencerSystemObject;
@@ -19,17 +19,5 @@ public class Texter : MonoBehaviour
         txt = gameObject.GetComponent<Text>();
         boxNumber = soundSystemObject.GetComponent<SoundSystem>().setBoxText();
         txt.text = "Layer: " + boxNumber.ToString();
-    }
-
-    void Update()
-    {
-        // TODO: only do this when moved
-        setPosition(); // give position of box to sequencer
-    }
-
-    void setPosition()
-    {
-        sequencerSystemObject.GetComponent<SequencerSystem>().get2dLayerParameter(boxNumber, new float[] { transform.position[0], transform.position[1] });
-
     }
 }

@@ -22,9 +22,11 @@ public class SequencerSystem : MonoBehaviour
     public Transform lineTransformX;
     public Transform lineTransformY;
     List<Transform> lineTransforms= new List<Transform>();
-    int intervalBetweenLines = 150;
 
-    // TODO: button for setting new lines, lengthenig slider and dynamically checking for parameters
+    // interval moet uitgerekend worden
+    // startlijn moet uitgevonden worden
+    // moet verplaatst worden met de linetransforms
+    int intervalBetweenLines = 150;
 
     private void Start()
     {
@@ -85,6 +87,19 @@ public class SequencerSystem : MonoBehaviour
                 }
             }
             parameters[i][layer - 1] = param;
+        }
+    }
+
+    public bool CheckIfLayerShouldPlay(int layer)
+    {
+        // return true if layer should play
+        if (parameters[0][layer] == (int)parameterSettingSliderX.value && parameters[1][layer] == (int)parameterSettingSliderY.value)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
