@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class spawner : MonoBehaviour
+public class SpawnControl : MonoBehaviour
 {
     public GameObject toBeSpawned;
     float spawnPositionY, spawnPositionX;
+
+    private void Start()
+    {
+        spawnPositionX = -150;
+        spawnPositionY = 20;
+    }
 
     public void SpawnBox()
     {
@@ -16,6 +22,6 @@ public class spawner : MonoBehaviour
         Box.transform.SetParent(GameObject.FindGameObjectWithTag("spawncomponent").transform, false);
 
         // update spawn position
-        spawnPositionY += 40;
+        spawnPositionY += 50;
     }
 }

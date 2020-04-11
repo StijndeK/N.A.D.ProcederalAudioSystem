@@ -38,16 +38,23 @@ public class SoundSystem : MonoBehaviour
     // transitioning
     List<int> transitionValues = new List<int>();
 
-    // Buttons
+    // Input
     public Button playButton;
     bool firstPress = true;
     public Button pauseButton;
+    public Slider volumeSlider; // TODO: make exponential with db values
 
     // boxtext
     int boxText;
 
     // text output
     public string textForOutput;
+
+    // layer Active Check
+    public List<int> layerActiveChecks = new List<int>();
+
+
+    //public bool sequencerUsed = true;
     
     /* TODO:
         * highlight when box is being played
@@ -72,14 +79,27 @@ public class SoundSystem : MonoBehaviour
         uint version;
         corSystem.getVersion(out version);
         corSystem.createChannelGroup("master", out channelgroup);         // create channel group
+        channelgroup.setVolume(2);
 
         // UI listeners
         playButton.onClick.AddListener(playButtonPressed);
         pauseButton.onClick.AddListener(pauseButtonPressed);
+        volumeSlider.onValueChanged.AddListener(sliderMoved);
 
         // spawn boxes
         SpawnerObject = GameObject.FindGameObjectWithTag("spawncomponent");
         SpawnerObject.GetComponent<SpawnerSystem>().SpawnBoxes();
+
+        // layer active check
+        for (int i = 0; i < layerAmount; i++)
+        {
+            layerActiveChecks.Add(0);
+        }
+    }
+
+    private void sliderMoved(float value)
+    {
+        channelgroup.setVolume(value);
     }
 
     void Update()
@@ -100,14 +120,16 @@ public class SoundSystem : MonoBehaviour
         }
         else
         {
-            print("play");
             stopping = !stopping;
         }
+        print("play");
+        textForOutput = textForOutput + "\n" + "play";
     }
 
     private void pauseButtonPressed()
     {
         print("pause (on next horizontal cycle)");
+        textForOutput = textForOutput + "\n" + "pause (on next horizontal cycle)";
         stopping = !stopping;
     }
 
@@ -125,6 +147,7 @@ public class SoundSystem : MonoBehaviour
         corSystem.playSound(sound, channelgroup, false, out channel);
 
         print("playing: " + filename);
+        textForOutput = textForOutput + "\n" + "playing: " + filename;
     }
 
     private void gameLoop()
@@ -135,18 +158,21 @@ public class SoundSystem : MonoBehaviour
             loopTime = Time.time + bpm;
             for (int layer = 0; layer < layerAmount; layer++)
             {
-                string currentTransitionOptions = entryList2[layer][transitionValues[layer]][1];
-
-                // get a random value as large as the amount of transition options for the file
-                int value = UnityEngine.Random.Range(1, (currentTransitionOptions.Length + 1));
-
-                // chose between the transition option by applying the random value to the string with options
-                transitionValues[layer] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
-
-                // play track if parameters (X & Y) are checked
-                if (SequencerObject.GetComponent<SequencerSystem>().CheckIfLayerShouldPlay(layer) == true)
+                if (layerActiveChecks[layer] == 1)
                 {
-                    playTrack(entryList2[layer][transitionValues[layer]][0]);
+                    string currentTransitionOptions = entryList2[layer][transitionValues[layer]][1];
+
+                    // get a random value as large as the amount of transition options for the file
+                    int value = UnityEngine.Random.Range(1, (currentTransitionOptions.Length + 1));
+
+                    // chose between the transition option by applying the random value to the string with options
+                    transitionValues[layer] = int.Parse(currentTransitionOptions[currentTransitionOptions.Length - value].ToString()) - 1;
+
+                    // play track if parameters (X & Y) are checked
+                    if (SequencerObject.GetComponent<SequencerSystem>().CheckIfLayerShouldPlay(layer) == true)
+                    {
+                        playTrack(entryList2[layer][transitionValues[layer]][0]);
+                    }
                 }
             }
             playing = true;

@@ -19,6 +19,9 @@ public class Mover : MonoBehaviour
 
     void Update()
     {
+        // TODO: only set position when object gets moved or when grid size changes
+        SetPosition();
+
         // check if box is pressed 
         if (Input.GetMouseButtonDown(0))
         {
@@ -50,6 +53,6 @@ public class Mover : MonoBehaviour
  
     void SetPosition()
     {
-        sequencerSystemObject.GetComponent<SequencerSystem>().get2dLayerParameter(gameObject.GetComponentInChildren<Texter>().boxNumber, new float[] { transform.position[0], transform.position[1] });
+        sequencerSystemObject.GetComponent<SequencerSystem>().get2dLayerParameter(gameObject.GetComponentInChildren<Texter>().boxNumber, new float[] { transform.position[0], transform.position[1] }, gameObject.GetComponentInChildren<Texter>().duplicateNumb);
     }
 }

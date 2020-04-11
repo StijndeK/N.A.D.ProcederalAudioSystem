@@ -11,8 +11,8 @@ public class AutoFileLoader : MonoBehaviour
     public List<string> fileNames;
     public List<List<List<string>>> entryList2 = new List<List<List<string>>>();
     // string input
-    public UnityEngine.UI.InputField inputField;
-    public UnityEngine.UI.InputField inputField2;
+    public UnityEngine.UI.InputField inputFieldBPM;
+    public UnityEngine.UI.InputField inputFieldBeats;
     public int layerAmount;
     // transitioning
     public List<int> transitionValues = new List<int>();
@@ -28,6 +28,7 @@ public class AutoFileLoader : MonoBehaviour
     private void Start()
     {
         loadButton.onClick.AddListener(loadButtonPressed);
+        //ReadFiles();
     }
 
     void loadButtonPressed()
@@ -93,8 +94,8 @@ public class AutoFileLoader : MonoBehaviour
 
     public float calculateTime()
     {
-        float beatsPerMinute = float.Parse(inputField.text);
-        float beatAmount = float.Parse(inputField2.text);
+        float beatsPerMinute = float.Parse(inputFieldBPM.text);
+        float beatAmount = float.Parse(inputFieldBeats.text);
 
         float duration = (60 / beatsPerMinute) * beatAmount;
         return duration;

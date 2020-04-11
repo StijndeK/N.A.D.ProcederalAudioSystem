@@ -5,101 +5,94 @@ using UnityEngine.UI;
 
 public class SequencerSystem : MonoBehaviour
 {
-    // + buttons
-    public Button addXButton;
-    public Button addYButton;
-
-    public GameObject toBeSpawned;
-    float spawnPositionY, spawnPositionX;
-
     // Parameters
     public Slider parameterSettingSliderX;
     public Slider parameterSettingSliderY;
-    public List<List<int>> parameters = new List<List<int>>();
-    int[] stepAmounts = {2, 1};
+    //public List<List<int>> parameters = new List<List<int>>();
+    public List<List<List<int>>> parameters3d = new List<List<List<int>>>(); // list to hold per parameter, per layer, per duplicate: if there is a layerbox and what value it has
+    int[] stepAmounts = {1, 1};
 
-    // line position
-    public Transform lineTransformX;
-    public Transform lineTransformY;
-    List<Transform> lineTransforms= new List<Transform>();
+    List<int> intervals = new List<int>();
 
-    // interval moet uitgerekend worden
-    // startlijn moet uitgevonden worden
-    // moet verplaatst worden met de linetransforms
-    int intervalBetweenLines = 150;
+    List<int> initialPositions = new List<int>();
 
     private void Start()
     {
         // init lists
-        parameters.Add(new List<int>());
-        parameters.Add(new List<int>());
-        lineTransforms.Add(lineTransformX);
-        lineTransforms.Add(lineTransformY);
+        //parameters.Add(new List<int>());
+        //parameters.Add(new List<int>());
 
-        // listeners
-        addXButton.onClick.AddListener(addXButtonPressed);
-        addYButton.onClick.AddListener(addYButtonPressed);
+        parameters3d.Add(new List<List<int>>());
+        parameters3d.Add(new List<List<int>>());
+
+        intervals.Add(0);
+        intervals.Add(0);
+
+        initialPositions.Add(0);
+        initialPositions.Add(0);
     }
 
-    private void addXButtonPressed()
+    public void get2dLayerParameter(int layer, float[] positions, int duplicateNumber) // called from mover when object is moved
     {
-        // add line
-        // (possibly) extend component size by adding one
-        // increase slider max
-        // increase slider length
-        // update stepAmounts
+        // get interval between boxes
+        intervals[0] = (int)gameObject.GetComponentInChildren<GridManager>().tileSizeRows;
+        intervals[1] = (int)gameObject.GetComponentInChildren<GridManager>().tileSizeCols;
 
-        spawnPositionX = GameObject.FindGameObjectWithTag("seqspawnloc").transform.localPosition[0];
-        spawnPositionY = GameObject.FindGameObjectWithTag("seqspawnloc").transform.localPosition[1];
-        print(spawnPositionX);
-        GameObject Box = Instantiate(toBeSpawned, new Vector3(spawnPositionX, spawnPositionY, 0), Quaternion.identity) as GameObject;
+        // set initial positions (account for intial offset)
+        initialPositions[0] = intervals[0] + 200;
+        initialPositions[1] = intervals[1] + 27;
 
-        // set parent to canvas
-        Box.transform.SetParent(GameObject.FindGameObjectWithTag("sequencer").transform, false);
-    }
+        // set stepamounts
+        stepAmounts[0] = gameObject.GetComponentInChildren<GridManager>().rows;
+        stepAmounts[1] = gameObject.GetComponentInChildren<GridManager>().cols;
 
-    private void addYButtonPressed()
-    {
-        // add line
-        // (possibly) extend component size
-        // increase slider max
-        // increase slider length
-        // update stepAmounts
-    }
+        //// for x and y
+        //for (int i = 0; i < 2; i++)
+        //{
+        //    // add layer if it isn't initialised yet
+        //    while (parameters[i].Count < layer) 
+        //    {
+        //        parameters[i].Add(0);
+        //    }
+ 
+        //    // sets to what value(s) a layer belongs
+        //    int param = 0;
+        //    for (int step = 0; step < stepAmounts[i]; step++) 
+        //    {
+        //        if (positions[i] >= initialPositions[i] + (step * intervals[i]))
+        //        {
+        //            param += 1; // add to param if position is larger then line
+        //        }
+        //        parameters[i][layer - 1] = param;
+        //    }
+        //}
 
-    public void get2dLayerParameter(int layer, float[] positions) // called from texter
-    {
+        // for x and y
         for (int i = 0; i < 2; i++)
         {
-            // add layer if it isn't initialised yet
-            if (parameters[i].Count < layer) 
-            {
-                parameters[i].Add(0);
-            }
-
             // sets to what value(s) a layer belongs
             int param = 0;
-            for (int j = 0; j < stepAmounts[i]; j++) 
+            for (int step = 0; step < stepAmounts[i]; step++)
             {
-                if (positions[i] >= lineTransforms[i].position[i] + (j * intervalBetweenLines))
+                if (positions[i] >= initialPositions[i] + (step * intervals[i]))
                 {
                     param += 1; // add to param if position is larger then line
                 }
             }
-            parameters[i][layer - 1] = param;
+            parameters3d[i][layer - 1][duplicateNumber - 1] = param;
         }
     }
 
     public bool CheckIfLayerShouldPlay(int layer)
     {
         // return true if layer should play
-        if (parameters[0][layer] == (int)parameterSettingSliderX.value && parameters[1][layer] == (int)parameterSettingSliderY.value)
+        for (int i = 0; i < parameters3d[0][layer].Count; i ++)
         {
-            return true;
+            if (parameters3d[0][layer][i] == (int)parameterSettingSliderX.value && parameters3d[1][layer][i] == (int)parameterSettingSliderY.value)
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }

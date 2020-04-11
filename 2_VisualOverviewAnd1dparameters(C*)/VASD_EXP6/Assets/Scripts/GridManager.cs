@@ -7,29 +7,25 @@ using UnityEngine.UI;
 public class GridManager : MonoBehaviour
 {
     // amount tile cells
-    private int rows = 4;
-    private int cols = 8;
+    public int rows = 2;
+    public int cols = 2;
 
     // tile sizes
-    private float tileSizeRows = 1;
-    private float tileSizeCols = 1;
+    public float tileSizeRows = 100;
+    public float tileSizeCols = 100;
 
-    // canvas size
-    // TODO: find/set this dyanmically
-    private float width = 17.75f;
-    private float height = 10;
     // component size
-    private float componentWidth;
-    private float componentHeight;
-
-    // scale of tile
-    private float scale = 0.71f;
+    private float componentWidth = 1078;
+    private float componentHeight = 431;
 
     // buttons
     public Button addXButton;
     public Button addYButton;
     public Button minXButton;
     public Button minYButton;
+
+    // gridsize object
+    public GameObject gridSize;
 
     void Start()
     {
@@ -44,82 +40,83 @@ public class GridManager : MonoBehaviour
 
     private void minYButtonPressed()
     {
-        rows -= 1;
-        foreach (Transform child in transform)
+        if (rows > 2)
         {
-            Destroy(child.gameObject);
+            rows -= 1;
+            foreach (Transform child in gridSize.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            gameObject.GetComponentInParent<SequencerSystem>().parameterSettingSliderY.maxValue -= 1;
+            GenerateGrid();
         }
-        GenerateGrid();
     }
 
     private void minXButtonPressed()
     {
-        cols -= 1;
-        foreach (Transform child in transform)
+        if (cols > 2)
         {
-            Destroy(child.gameObject);
+            cols -= 1;
+            foreach (Transform child in gridSize.transform)
+            {
+                Destroy(child.gameObject);
+            }
+            gameObject.GetComponentInParent<SequencerSystem>().parameterSettingSliderX.maxValue -= 1;
+            GenerateGrid();
         }
-        GenerateGrid();
     }
 
     private void addYButtonPressed()
     {
         rows += 1;
-        foreach (Transform child in transform)
+        foreach (Transform child in gridSize.transform)
         {
             Destroy(child.gameObject);
         }
+        gameObject.GetComponentInParent<SequencerSystem>().parameterSettingSliderY.maxValue += 1;
         GenerateGrid();
     }
 
     private void addXButtonPressed()
     {
         cols += 1;
-        foreach (Transform child in transform)
+        foreach (Transform child in gridSize.transform)
         {
             Destroy(child.gameObject);
         }
+        gameObject.GetComponentInParent<SequencerSystem>().parameterSettingSliderX.maxValue += 1;
         GenerateGrid();
     }
 
     private void GenerateGrid()
     {
-        // set component size (relative to size)
-        componentWidth = width;
-        componentHeight = height / 2;
-
         // Dynamic tilesize
         tileSizeRows = componentWidth / cols;
         tileSizeCols = componentHeight / rows;
 
-        // get tile
-        GameObject referenceTile = (GameObject)Instantiate(Resources.Load("GrabableBorder"));
+        // get tile component
+        GameObject referenceTile = (GameObject)Instantiate(Resources.Load("LayerRoom"));
 
         // Scale tile to tilesize
-        referenceTile.transform.localScale = new Vector2(scale * tileSizeRows, scale * tileSizeCols);
+        referenceTile.transform.localScale = new Vector2(tileSizeRows / 100, tileSizeCols / 100);
 
+        // for every cell create and set position
         for (int row = 0; row < rows; row++)
         {
             for (int col = 0; col < cols; col++)
             {
-                GameObject tile = (GameObject)Instantiate(referenceTile, transform);
-
                 // create dynamic position
                 float posX = col * tileSizeRows;
                 float posY = row * -tileSizeCols;
 
-                // move from center to top left in screen by removing the distance to the topleft minus half the size of the sprite
-                posX -= (componentWidth / 2) - ((tileSizeRows) / 2);
-                posY += (componentHeight / 2) - ((tileSizeCols) / 2);
+                // account for middle pivot
+                posX += tileSizeRows / 2;
+                posY -= tileSizeCols / 2;
 
-                // account for positioning on canvas of sequencer component
-                posY -= componentHeight / 2;
-
-                // set position
-                tile.transform.position = new Vector2(posX, posY);
+                // create cell and set parent
+                GameObject Box = Instantiate(referenceTile, new Vector3(posX, posY, 0), Quaternion.identity) as GameObject;
+                Box.transform.SetParent(GameObject.FindGameObjectWithTag("gridSize").transform, false);
             }
         }
-
-        Destroy(referenceTile);
     }
 }
