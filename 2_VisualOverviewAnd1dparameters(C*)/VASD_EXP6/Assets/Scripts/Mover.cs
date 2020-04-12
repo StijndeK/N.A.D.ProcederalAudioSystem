@@ -7,10 +7,9 @@ public class Mover : MonoBehaviour
     bool moveState;
 
     GameObject sequencerSystemObject;
-
-    int xPosition = 70;
-    int yPosition = 15;
-    int boxSize = 10;
+    readonly int xPosition = 90;
+    readonly int yPosition = 20;
+    readonly int boxSize = 10;
 
     void Start()
     {
@@ -19,7 +18,7 @@ public class Mover : MonoBehaviour
 
     void Update()
     {
-        // TODO: only set position when object gets moved or when grid size changes
+        // TODO: only set position when object gets moved or grid size changes. so move setposition to sequencer class, which listens to grid or movement changes
         SetPosition();
 
         // check if box is pressed 
@@ -38,7 +37,7 @@ public class Mover : MonoBehaviour
         // stop movestate and set the position when mouse is released
         if (Input.GetMouseButtonUp(0))
         {
-            SetPosition();
+            //SetPosition();
             moveState = false;
         }
         // set the box position to mouse position during movestate

@@ -14,7 +14,7 @@ public class ManagerTexter : MonoBehaviour
     {
         soundSystemObject = GameObject.FindGameObjectWithTag("controler");
         txt = gameObject.GetComponent<Text>();
-        boxNumber = soundSystemObject.GetComponent<SoundSystem>().setBoxText();
+        boxNumber = soundSystemObject.GetComponent<SoundSystem>().SetBoxText();
         txt.text = "Layer: " + boxNumber.ToString();
     }
 }

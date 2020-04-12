@@ -7,13 +7,11 @@ using UnityEngine.UI;
 
 public class SoundSystem : MonoBehaviour
 {
-    // ---------------------------
     // gameobjects
     GameObject FileLoaderObject;
     GameObject SpawnerObject;
     GameObject SequencerObject;
 
-    // ---------------------------
     // list containing al wav files
     public List<string> fileNames;
     public List<List<List<string>>> entryList2 = new List<List<List<string>>>();
@@ -42,7 +40,7 @@ public class SoundSystem : MonoBehaviour
     public Button playButton;
     bool firstPress = true;
     public Button pauseButton;
-    public Slider volumeSlider; // TODO: make exponential with db values
+    public Slider volumeSlider; // TODO: exponential curve with db values
 
     // boxtext
     int boxText;
@@ -52,14 +50,6 @@ public class SoundSystem : MonoBehaviour
 
     // layer Active Check
     public List<int> layerActiveChecks = new List<int>();
-
-
-    //public bool sequencerUsed = true;
-    
-    /* TODO:
-        * highlight when box is being played
-        * visualise how the data is loaded and parsed
-    */
 
     void Start()
     {
@@ -79,7 +69,6 @@ public class SoundSystem : MonoBehaviour
         uint version;
         corSystem.getVersion(out version);
         corSystem.createChannelGroup("master", out channelgroup);         // create channel group
-        channelgroup.setVolume(2);
 
         // UI listeners
         playButton.onClick.AddListener(playButtonPressed);
@@ -90,24 +79,22 @@ public class SoundSystem : MonoBehaviour
         SpawnerObject = GameObject.FindGameObjectWithTag("spawncomponent");
         SpawnerObject.GetComponent<SpawnerSystem>().SpawnBoxes();
 
-        // layer active check
+        // layer active checks to see if a layer needs to be checked in the sequencer
         for (int i = 0; i < layerAmount; i++)
         {
             layerActiveChecks.Add(0);
         }
     }
 
-    private void sliderMoved(float value)
-    {
-        channelgroup.setVolume(value);
-    }
-
     void Update()
     {
         if (startPlaying == true)
-        {
             gameLoop();
-        }
+    }
+
+    private void sliderMoved(float value)
+    {
+        channelgroup.setVolume(value);
     }
 
     public void playButtonPressed()
@@ -134,14 +121,15 @@ public class SoundSystem : MonoBehaviour
     }
 
     // set text on layer box
-    public int setBoxText()
+    public int SetBoxText()
     {
         boxText++;
         return boxText;
     }
 
-    public void playTrack(string filename)
+    public void PlayTrack(string filename)
     {
+        // TODO: dont create new sound every time, or delete sound after usage
         Sound sound;
         corSystem.createSound(FileLoaderObject.GetComponent<AutoFileLoader>().folderLocation + filename, MODE.DEFAULT, out sound);
         corSystem.playSound(sound, channelgroup, false, out channel);
@@ -171,7 +159,7 @@ public class SoundSystem : MonoBehaviour
                     // play track if parameters (X & Y) are checked
                     if (SequencerObject.GetComponent<SequencerSystem>().CheckIfLayerShouldPlay(layer) == true)
                     {
-                        playTrack(entryList2[layer][transitionValues[layer]][0]);
+                        PlayTrack(entryList2[layer][transitionValues[layer]][0]);
                     }
                 }
             }

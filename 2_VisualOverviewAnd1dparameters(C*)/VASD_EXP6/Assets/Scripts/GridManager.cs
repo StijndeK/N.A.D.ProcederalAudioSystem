@@ -90,7 +90,7 @@ public class GridManager : MonoBehaviour
 
     private void GenerateGrid()
     {
-        // Dynamic tilesize
+        // calculate tilesize
         tileSizeRows = componentWidth / cols;
         tileSizeCols = componentHeight / rows;
 
@@ -113,7 +113,7 @@ public class GridManager : MonoBehaviour
                 posX += tileSizeRows / 2;
                 posY -= tileSizeCols / 2;
 
-                // create cell and set parent
+                // spawn cell
                 GameObject Box = Instantiate(referenceTile, new Vector3(posX, posY, 0), Quaternion.identity) as GameObject;
                 Box.transform.SetParent(GameObject.FindGameObjectWithTag("gridSize").transform, false);
             }

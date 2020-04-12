@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// calls boxes to be spawned in spawncontrol
 public class SpawnerSystem : MonoBehaviour
 {
-    GameObject spawnerObject;
     GameObject soundSystemObject;
 
     // value for setting correct layer when adding a box

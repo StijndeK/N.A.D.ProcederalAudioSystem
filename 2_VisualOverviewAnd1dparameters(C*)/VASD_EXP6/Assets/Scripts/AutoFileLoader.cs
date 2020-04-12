@@ -10,16 +10,21 @@ public class AutoFileLoader : MonoBehaviour
     // list containing al wav files
     public List<string> fileNames;
     public List<List<List<string>>> entryList2 = new List<List<List<string>>>();
-    // string input
+
+    // input
     public UnityEngine.UI.InputField inputFieldBPM;
     public UnityEngine.UI.InputField inputFieldBeats;
     public int layerAmount;
+
     // transitioning
     public List<int> transitionValues = new List<int>();
+
     // text output
     public string textForOutput;
+
     // Parameterss
     public List<int> parameterX = new List<int>();
+
     // Folder location
     public UnityEngine.UI.InputField inputField3;
     public Button loadButton;
@@ -27,11 +32,10 @@ public class AutoFileLoader : MonoBehaviour
 
     private void Start()
     {
-        loadButton.onClick.AddListener(loadButtonPressed);
-        //ReadFiles();
+        loadButton.onClick.AddListener(LoadButtonPressed);
     }
 
-    void loadButtonPressed()
+    void LoadButtonPressed()
     {
         folderLocation = inputField3.text;
         print("new path set to: " + folderLocation);
@@ -97,7 +101,6 @@ public class AutoFileLoader : MonoBehaviour
         float beatsPerMinute = float.Parse(inputFieldBPM.text);
         float beatAmount = float.Parse(inputFieldBeats.text);
 
-        float duration = (60 / beatsPerMinute) * beatAmount;
-        return duration;
+        return (60 / beatsPerMinute) * beatAmount;
     }
 }

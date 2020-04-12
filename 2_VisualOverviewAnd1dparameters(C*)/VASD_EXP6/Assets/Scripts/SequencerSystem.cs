@@ -8,7 +8,7 @@ public class SequencerSystem : MonoBehaviour
     // Parameters
     public Slider parameterSettingSliderX;
     public Slider parameterSettingSliderY;
-    //public List<List<int>> parameters = new List<List<int>>();
+
     public List<List<List<int>>> parameters3d = new List<List<List<int>>>(); // list to hold per parameter, per layer, per duplicate: if there is a layerbox and what value it has
     int[] stepAmounts = {1, 1};
 
@@ -18,10 +18,7 @@ public class SequencerSystem : MonoBehaviour
 
     private void Start()
     {
-        // init lists
-        //parameters.Add(new List<int>());
-        //parameters.Add(new List<int>());
-
+        // init lists for x and y values
         parameters3d.Add(new List<List<int>>());
         parameters3d.Add(new List<List<int>>());
 
@@ -45,27 +42,6 @@ public class SequencerSystem : MonoBehaviour
         // set stepamounts
         stepAmounts[0] = gameObject.GetComponentInChildren<GridManager>().rows;
         stepAmounts[1] = gameObject.GetComponentInChildren<GridManager>().cols;
-
-        //// for x and y
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    // add layer if it isn't initialised yet
-        //    while (parameters[i].Count < layer) 
-        //    {
-        //        parameters[i].Add(0);
-        //    }
- 
-        //    // sets to what value(s) a layer belongs
-        //    int param = 0;
-        //    for (int step = 0; step < stepAmounts[i]; step++) 
-        //    {
-        //        if (positions[i] >= initialPositions[i] + (step * intervals[i]))
-        //        {
-        //            param += 1; // add to param if position is larger then line
-        //        }
-        //        parameters[i][layer - 1] = param;
-        //    }
-        //}
 
         // for x and y
         for (int i = 0; i < 2; i++)

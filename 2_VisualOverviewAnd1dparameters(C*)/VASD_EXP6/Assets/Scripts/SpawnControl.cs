@@ -3,20 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+// spawns the boxes from which layer boxes can be spawned
 public class SpawnControl : MonoBehaviour
 {
     public GameObject toBeSpawned;
-    float spawnPositionY, spawnPositionX;
-
-    private void Start()
-    {
-        spawnPositionX = -150;
-        spawnPositionY = 20;
-    }
+    float spawnPositionY;
 
     public void SpawnBox()
     {
-        GameObject Box = Instantiate(toBeSpawned, new Vector3(spawnPositionX, spawnPositionY - 40, 0), Quaternion.identity) as GameObject;
+        GameObject Box = Instantiate(toBeSpawned, new Vector3(-150, spawnPositionY - 40, 0), Quaternion.identity) as GameObject;
 
         // set parent to canvas
         Box.transform.SetParent(GameObject.FindGameObjectWithTag("spawncomponent").transform, false);

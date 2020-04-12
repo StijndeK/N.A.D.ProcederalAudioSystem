@@ -16,5 +16,6 @@ public class LayerBoxManager : MonoBehaviour
     private void removeButtonPressed()
     {
         Destroy(gameObject);
+        //TODO: remove it from duplicates list (use vectors)
     }
 }
