@@ -4,8 +4,10 @@ The sixth VASD prototype. EXP6 builds further on [EXP5](https://github.com/Stijn
 ## Example
 - [EXP6](https://streamable.com/uvkjxm)
 <img width="1306" alt="VASD_EXP6" src="https://user-images.githubusercontent.com/31696336/79067862-d3f88280-7cc2-11ea-83de-1272f8238e1e.png">
+
 ## Data flow
 <img width="1261" alt="VASD_EXP6_Dataflow" src="https://user-images.githubusercontent.com/31696336/79068833-1f625f00-7cca-11ea-98f7-a95e34ac824b.png">
+
 ## Design
 <img width="839" alt="Screenshot 2020-04-12 at 13 59 53" src="https://user-images.githubusercontent.com/31696336/79068269-e88a4a00-7cc5-11ea-9756-c69a71d197a1.png">
 
