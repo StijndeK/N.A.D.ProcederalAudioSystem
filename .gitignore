@@ -126,6 +126,7 @@ dmypy.json
 .DS_Store
 *.wav
 VASD_EXP6_Real
+VASD_EXP7_Real
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP3/Assets/inc
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP4/Assets/inc
 2_VisualOverviewAnd1dparameters(C*)/VASD_EXP5/Assets/inc
