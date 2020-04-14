@@ -10,15 +10,28 @@ public class ProceduralAudio : MonoBehaviour
     // TODO: INREADME: niet unityobjectcomponent based systeem
 
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
+    List<List<int>> rythms = new List<List<int>>(); // layer, rythm
+
+    int amountOfLayers = 1;
+
+    // TODO: make dynamic to allow for polyrythm
+    int beatsPerMeasure = 4;
+    int currentBeat;
+
     public string folderLocation = "../ProceduralBounceLocation/";
 
     void Start()
     {
-        entryList = PAutoFileLoader.ReadFiles(folderLocation);
+        entryList = PAutoFileLoader.ReadFiles(folderLocation, amountOfLayers);
 
         PClock.Start();
 
         PAudioPlayer.Start();
+
+        for (int layer = 0; layer < amountOfLayers; layer++)
+        {
+            rythms.Add(PRythm.GenerateRythm(beatsPerMeasure));
+        }
     }
 
     void Update()
@@ -29,10 +42,24 @@ public class ProceduralAudio : MonoBehaviour
         if (PClock.nextTick)
         {
             print("tick");
-            // play audio
-            PAudioPlayer.PlayFile(folderLocation, (string)entryList[0][Random.Range(0, 11)]);
+
+            if (currentBeat > 3)
+            {
+                currentBeat = 0;
+            }
+
+            // for every layer
+            for (int layer = 0; layer < amountOfLayers; layer++)
+            {
+                // check rythm
+                if (rythms[layer][currentBeat] == 1)
+                {
+                    // play audio
+                    PAudioPlayer.PlayFile(folderLocation, (string)entryList[0][Random.Range(0, 12)]);
+                }
+            }
+
+            currentBeat += 1;
         }
     }
-
-
 }

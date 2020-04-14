@@ -9,12 +9,10 @@ public class PAutoFileLoader
 {
     // NOTE: transition possability not necessary here. maybe necessary for later for different parts of the audio
 
-    public static List<List<string>> ReadFiles(string directoryLocation)
+    public static List<List<string>> ReadFiles(string directoryLocation, int layerAmount)
     {
         DirectoryInfo dir = new DirectoryInfo(directoryLocation);
         FileInfo[] info = dir.GetFiles("*.wav*");
-
-        int layerAmount = 1;
 
         // list containing al wav files
         List<string> fileNames = new List<string>();
