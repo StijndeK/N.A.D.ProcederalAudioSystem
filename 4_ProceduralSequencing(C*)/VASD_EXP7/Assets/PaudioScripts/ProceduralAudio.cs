@@ -12,23 +12,33 @@ public class ProceduralAudio : MonoBehaviour
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
     List<List<int>> rythms = new List<List<int>>(); // layer, rythm
     List<List<int>> melodies = new List<List<int>>(); // layer, melody
+    List<int> currentTicks = new List<int>();
+
+    // ---------------------------------
+    // VARIABLES TO SET BEFORE RUNNING
+
+    // amount of options per layer to choose from
     List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
-    List<int> beatsPerMeasures = new List<int> { 4, 4, 1, 4 };// layer, amount of options
 
+    // amount of beats in a measure per layer
+    List<int> beatsPerMeasures = new List<int> { 3, 4, 1, 4 };// layer, amount of options
 
+    // length of a beat in ticks(4th notes)
+    List<int> beatLengths = new List<int> { 1, 1, 4, 1 };// layer, amount of options
+
+    // total number of vertical audio layers
     private int amountOfLayers = 4;
 
-    // TODO: create dynamic amount of beats per measure to allow for polyrithm in rythm melody etc 
-    private int beatsPerMeasure = 4;
-    private int currentTick;
-
     private string folderLocation = "../ProceduralBounceLocation/";
+
+    private int bpm = 100;
+    // ---------------------------------
 
     void Start()
     {
         entryList = PAutoFileLoader.ReadFiles(folderLocation, amountOfLayers);
 
-        PClock.Start();
+        PClock.Init(bpm);
 
         PAudioPlayer.Start();
 
@@ -44,34 +54,28 @@ public class ProceduralAudio : MonoBehaviour
         {
             print("tick");
 
-            // reset (start new) measure
-            // TODO: use % to check what polyrythm line needs to be reset when
-            if (currentTick > 3)
-            {
-                currentTick = 0;
-            }
-
             // for every layer
             for (int layer = 0; layer < amountOfLayers; layer++)
             {
-                if (rythms[layer].Count - 1 >= currentTick) // TODO: remove this and add better polyrythm support
-                {
-                    // check rythm
-                    if (rythms[layer][currentTick] == 1)
-                    {
-                        // play audio
-                        PAudioPlayer.PlayFile(folderLocation, (string)entryList[layer][melodies[layer][currentTick]]);
-                    }
-                }
-            }
+                // convert tick number into measure
+                currentTicks[layer] = currentTicks[layer] % rythms[layer].Count;
+                print(currentTicks[layer]);
 
-            currentTick += 1;
+                // check rythm
+                if (rythms[layer][currentTicks[layer]] == 1)
+                {
+                    // play audio
+                    PAudioPlayer.PlayFile(folderLocation, (string)entryList[layer][melodies[layer][currentTicks[layer]]]);
+                }
+
+                // next tick
+                currentTicks[layer] += 1;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             GenerateAudioData();
-            currentTick = 0;
         }
     }
 
@@ -82,17 +86,21 @@ public class ProceduralAudio : MonoBehaviour
             // check if layer initialised
             if (rythms.Count < layer + 1)
             {
-                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[layer]));
+                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer]));
                 melodies.Add(PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]));
+                currentTicks.Add(0);
             }
             else
             {
-                rythms[layer] = PRythm.GenerateRythm(beatsPerMeasures[layer]);
+                rythms[layer] = PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer]);
                 melodies[layer] = PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]);
+                currentTicks[layer] = 0;
             }
 
             print("layer " + layer.ToString());
+            print("rythm: ");
             for (int i = 0; i < rythms[layer].Count; i++) print(rythms[layer][i]);
+            print("melody: ");
             for (int i = 0; i < rythms[layer].Count; i++) print(melodies[layer][i]);
         }
     }

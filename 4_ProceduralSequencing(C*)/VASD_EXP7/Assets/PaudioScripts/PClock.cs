@@ -8,9 +8,9 @@ public class PClock
     public static float currentBPM;
     public static bool nextTick;
 
-    public static void Start()
+    public static void Init(int bpm)
     {
-        currentBPM = calculateTime(80, 1);
+        currentBPM = calculateTime(bpm, 1);
         loopTime = Time.time + currentBPM;
         nextTick = Time.time < loopTime;
     }
@@ -26,7 +26,6 @@ public class PClock
         nextTick |= Time.time > loopTime;
     }
 
-    // TODO: kan dit gebruiken om per layer in te stellen hoevaak het kan ticken
     public static float calculateTime(float bpm, float ticks)
     {
         return (60 / bpm) * ticks;
