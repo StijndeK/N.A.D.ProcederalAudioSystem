@@ -10,8 +10,11 @@ public class ProceduralAudio : MonoBehaviour
     // TODO: INREADME: niet unityobjectcomponent based systeem
 
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
+
     List<List<int>> rythms = new List<List<int>>(); // layer, rythm
+
     List<List<int>> melodies = new List<List<int>>(); // layer, melody
+
     List<int> currentTicks = new List<int>();
 
     // ---------------------------------
@@ -22,13 +25,15 @@ public class ProceduralAudio : MonoBehaviour
     List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
 
     // amount of beats in a measure per layer
-    List<int> beatsPerMeasures = new List<int> { 3, 4, 1, 4 };// layer, amount of options
+    List<int> beatsPerMeasures = new List<int> { 8, 4, 2, 4 };// layer, amount of options
 
     // length of a beat in ticks(4th notes)
     List<int> beatLengths = new List<int> { 1, 1, 4, 1 };// layer, amount of options
 
     // average note density of rythms: 10 = playing every tick, 5 = 50% chance to play every tick
     List<int> noteDensities = new List<int> { 8, 4, 10, 10 };// layer, amount of options
+
+    List<bool> layerOn = new List<bool> {false, false, false, false };
 
     // total number of vertical audio layers
     private int amountOfLayers = 4;
@@ -65,11 +70,15 @@ public class ProceduralAudio : MonoBehaviour
                 currentTicks[layer] = currentTicks[layer] % rythms[layer].Count;
                 print(currentTicks[layer]);
 
-                // check rythm
-                if (rythms[layer][currentTicks[layer]] == 1)
+                // check if layer is active
+                if(layerOn[layer])
                 {
-                    // play audio
-                    PAudioPlayer.PlayFile(folderLocation, (string)entryList[layer][melodies[layer][currentTicks[layer]]]);
+                    // check rythm
+                    if (rythms[layer][currentTicks[layer]] == 1)
+                    {
+                        // play audio
+                        PAudioPlayer.PlayFile(folderLocation, (string)entryList[layer][melodies[layer][currentTicks[layer]]]);
+                    }
                 }
 
                 // next tick
@@ -81,6 +90,15 @@ public class ProceduralAudio : MonoBehaviour
         {
             GenerateAudioData();
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            layerOn[0] = !layerOn[0];
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            layerOn[1] = !layerOn[1];
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            layerOn[2] = !layerOn[2];
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            layerOn[3] = !layerOn[3];
     }
 
     void GenerateAudioData()
