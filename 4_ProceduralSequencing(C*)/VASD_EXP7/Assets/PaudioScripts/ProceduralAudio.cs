@@ -16,6 +16,7 @@ public class ProceduralAudio : MonoBehaviour
 
     // ---------------------------------
     // VARIABLES TO SET BEFORE RUNNING
+    // these variables in the future should be linked to game parameters
 
     // amount of options per layer to choose from
     List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
@@ -25,6 +26,9 @@ public class ProceduralAudio : MonoBehaviour
 
     // length of a beat in ticks(4th notes)
     List<int> beatLengths = new List<int> { 1, 1, 4, 1 };// layer, amount of options
+
+    // average note density of rythms: 10 = playing every tick, 5 = 50% chance to play every tick
+    List<int> noteDensities = new List<int> { 8, 4, 10, 10 };// layer, amount of options
 
     // total number of vertical audio layers
     private int amountOfLayers = 4;
@@ -86,13 +90,13 @@ public class ProceduralAudio : MonoBehaviour
             // check if layer initialised
             if (rythms.Count < layer + 1)
             {
-                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer]));
+                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer], noteDensities[layer]));
                 melodies.Add(PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]));
                 currentTicks.Add(0);
             }
             else
             {
-                rythms[layer] = PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer]);
+                rythms[layer] = PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer], noteDensities[layer]);
                 melodies[layer] = PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]);
                 currentTicks[layer] = 0;
             }
