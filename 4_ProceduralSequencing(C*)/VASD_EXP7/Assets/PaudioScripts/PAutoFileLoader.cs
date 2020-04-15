@@ -34,9 +34,7 @@ public class PAutoFileLoader
         // parse list per filename
         for (int i = 0; i < fileNames.Count; i++)
         {
-            //print(fileNames[i]);
-
-            // pass name and transition possibilities per track to entry list
+            // pass name in layer per track to entry list
             entryList[int.Parse(fileNames[i][0].ToString()) - 1].Add(fileNames[i]);
         }
 
