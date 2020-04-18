@@ -7,10 +7,11 @@ using UnityEngine.UI;
 
 public class PAutoFileLoader
 {
-    // NOTE: transition possability not necessary here. maybe necessary for later for different parts of the audio
-
+    // read files for looping sounds 
     public static List<List<string>> ReadFiles(string directoryLocation, int layerAmount)
     {
+        // TODO: track reading isnt really necessary anymore. could also be moved to end of name to allow for easier filenaming from daws
+
         DirectoryInfo dir = new DirectoryInfo(directoryLocation);
         FileInfo[] info = dir.GetFiles("*.wav*");
 

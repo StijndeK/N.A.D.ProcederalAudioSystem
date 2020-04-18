@@ -6,10 +6,12 @@ using FMOD;
 
 public class ProceduralAudio : MonoBehaviour
 {
-    // TODO: per layer instellen hoevaak het kan ticken. zodat je ook langere noten kan hebben etc
     // TODO: INREADME: niet unityobjectcomponent based systeem
+    // TODO: INREADME: right now only an octave per sound can be added, which makes it hard for scales when the base note can't be in the bass
+    // TODO: create scale size variable
 
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
+    List<List<string>> entryListOS = new List<List<string>>(); // layer, tracks, filename
 
     List<List<int>> rythms = new List<List<int>>(); // layer, rythm
 
@@ -19,7 +21,7 @@ public class ProceduralAudio : MonoBehaviour
 
     // ---------------------------------
     // VARIABLES TO SET BEFORE RUNNING
-    // these variables in the future should be linked to game parameters
+    // (some of) these variables in the future should be linked to game parameters
 
     // amount of options per layer to choose from
     List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
@@ -35,17 +37,30 @@ public class ProceduralAudio : MonoBehaviour
 
     List<bool> layerOn = new List<bool> {false, false, false, false };
 
-    // total number of vertical audio layers
-    private int amountOfLayers = 4;
+    // set to what scale is used
+    List<string> scaleInNotes = new List<string> {"c", "c#", "d", "d#", "e", "f", "f#","g", "g#", "a", "a#", "b" };
 
-    private string folderLocation = "../ProceduralBounceLocation/";
+    // total number of looping layers and oneshots
+    private int amountOfLayers = 4;
+    private int amountOfSoundEffects = 1;
+
+    private string folderLocationLoops = "../ProceduralBounceLocation/";
+    private string folderLocationOneShots = "../ProceduralBounceLocationOS/";
 
     private int bpm = 100;
+
+    private int chordAmount = 4;
+    private int chordLengthInTicks = 4;
+    private int chordLayerAmount = 3;
     // ---------------------------------
 
     void Start()
     {
-        entryList = PAutoFileLoader.ReadFiles(folderLocation, amountOfLayers);
+        // read looping audio
+        entryList = PAutoFileLoader.ReadFiles(folderLocationLoops, amountOfLayers);
+
+        // read oneshots
+        entryListOS = PAutoFileLoader.ReadFiles(folderLocationOneShots, amountOfSoundEffects);
 
         PClock.Init(bpm);
 
@@ -68,7 +83,6 @@ public class ProceduralAudio : MonoBehaviour
             {
                 // convert tick number into measure
                 currentTicks[layer] = currentTicks[layer] % rythms[layer].Count;
-                print(currentTicks[layer]);
 
                 // check if layer is active
                 if(layerOn[layer])
@@ -77,7 +91,7 @@ public class ProceduralAudio : MonoBehaviour
                     if (rythms[layer][currentTicks[layer]] == 1)
                     {
                         // play audio
-                        PAudioPlayer.PlayFile(folderLocation, (string)entryList[layer][melodies[layer][currentTicks[layer]]]);
+                        PAudioPlayer.PlayFile(folderLocationLoops, (string)entryList[layer][melodies[layer][currentTicks[layer]]]);
                     }
                 }
 
@@ -86,11 +100,11 @@ public class ProceduralAudio : MonoBehaviour
             }
         }
 
+        // generate new data
         if (Input.GetKeyDown(KeyCode.Space))
-        {
             GenerateAudioData();
-        }
 
+        // toggle layers
         if (Input.GetKeyDown(KeyCode.Alpha1))
             layerOn[0] = !layerOn[0];
         if (Input.GetKeyDown(KeyCode.Alpha2))
@@ -99,10 +113,22 @@ public class ProceduralAudio : MonoBehaviour
             layerOn[2] = !layerOn[2];
         if (Input.GetKeyDown(KeyCode.Alpha4))
             layerOn[3] = !layerOn[3];
+
+        // call oneshots
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            string soundToPlay = (string)entryListOS[0][Random.Range(0, entryListOS[0].Count)];
+            POneshots.playOneShot(folderLocationOneShots, soundToPlay);
+        }
+
     }
 
     void GenerateAudioData()
     {
+        var chords = PHarmony.GenerateChords(chordAmount, chordLengthInTicks, chordLayerAmount);
+        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]] + " major");
+
+        // generate melody
         for (int layer = 0; layer < amountOfLayers; layer++)
         {
             // check if layer initialised
@@ -118,12 +144,17 @@ public class ProceduralAudio : MonoBehaviour
                 melodies[layer] = PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]);
                 currentTicks[layer] = 0;
             }
+            // ik wil hier dus melody 3 de grondtoon van het akkoord laten spelen
 
             print("layer " + layer.ToString());
-            print("rythm: ");
-            for (int i = 0; i < rythms[layer].Count; i++) print(rythms[layer][i]);
-            print("melody: ");
-            for (int i = 0; i < rythms[layer].Count; i++) print(melodies[layer][i]);
+
+            string rythmOutput = "";
+            for (int i = 0; i < rythms[layer].Count; i++) rythmOutput += rythms[layer][i].ToString();
+            print(rythmOutput);
+
+            string melodyOutput = "";
+            for (int i = 0; i < rythms[layer].Count; i++) melodyOutput += melodies[layer][i].ToString();
+            print(melodyOutput);
         }
     }
 }
