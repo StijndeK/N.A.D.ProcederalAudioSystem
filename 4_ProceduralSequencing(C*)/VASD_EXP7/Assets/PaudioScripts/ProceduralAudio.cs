@@ -7,7 +7,6 @@ using FMOD;
 public class ProceduralAudio : MonoBehaviour
 {
     // TODO: INREADME: niet unityobjectcomponent based systeem
-    // TODO: INREADME: right now only an octave per sound can be added, which makes it hard for scales when the base note can't be in the bass
     // TODO: create scale size variable
 
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
@@ -18,6 +17,9 @@ public class ProceduralAudio : MonoBehaviour
     List<List<int>> melodies = new List<List<int>>(); // layer, melody
 
     List<int> currentTicks = new List<int>();
+
+    public static List<int> currentScale = new List<int>();
+
 
     // ---------------------------------
     // VARIABLES TO SET BEFORE RUNNING
@@ -125,6 +127,10 @@ public class ProceduralAudio : MonoBehaviour
 
     void GenerateAudioData()
     {
+        // set scale
+        currentScale = PHarmony.setScale(Random.Range(0, 2));
+
+        // generate chords
         var chords = PHarmony.GenerateChords(chordAmount, chordLengthInTicks, chordLayerAmount);
         for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]] + " major");
 

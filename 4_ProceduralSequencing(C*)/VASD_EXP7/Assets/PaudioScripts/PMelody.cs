@@ -6,7 +6,7 @@ public class PMelody
 {
     // TODO: pas later de melodie tegenover de scale zetten zodat het in de harmonizer gebruikt kan worden
 
-    private static List<int> currentScale = new List<int> { 0, 2, 4, 5, 7, 9, 11};
+    //private static List<int> currentScale = new List<int> { 0, 2, 4, 5, 7, 9, 11};
 
     public static List<int> GenerateMelody(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
     {
@@ -19,7 +19,7 @@ public class PMelody
             // if a note needs to be played
             if (rythm[tick] == 1)
             {
-                layerMelody.Add(currentScale[Random.Range(0, frequencyRange)]);
+                layerMelody.Add(ProceduralAudio.currentScale[Random.Range(0, frequencyRange)]);
             }
 
             else
