@@ -5,9 +5,9 @@ using UnityEngine;
 public class POneshots
 {
     // call oneshot sounds
-    public static void playOneShot(string folderLocation, string fileName, float ducking = 0)
+    public static void playOneShot(string folderLocation, string fileName, bool reverse = false, float ducking = 0)
     {
         // TODO: add ducking functionality
-        PAudioPlayer.PlayFile(folderLocation, fileName);
+        PAudioPlayer.PlayFile(folderLocation, fileName, reverse);
     }
 }

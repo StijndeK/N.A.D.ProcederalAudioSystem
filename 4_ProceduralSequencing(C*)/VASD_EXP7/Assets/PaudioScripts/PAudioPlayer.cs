@@ -10,6 +10,8 @@ public class PAudioPlayer
     static ChannelGroup channelgroup;
     static Channel channel;
 
+    public static float currentFq;
+
     public static void Start()
     {
         corSystem = FMODUnity.RuntimeManager.CoreSystem;
@@ -18,8 +20,16 @@ public class PAudioPlayer
         corSystem.createChannelGroup("master", out channelgroup);
     }
 
-    public static void PlayFile(string folderLocation, string fileName)
+    public static void PlayFile(string folderLocation, string fileName, bool reverse = false)
     {
+        // TODO: DSP toevoegen hier
+
+        if (reverse)
+        {
+            channel.getFrequency(out currentFq);
+            channel.setFrequency(0 - currentFq);
+        }
+
         Sound sound;
         corSystem.createSound(folderLocation + fileName, MODE.DEFAULT, out sound);
         corSystem.playSound(sound, channelgroup, false, out channel);

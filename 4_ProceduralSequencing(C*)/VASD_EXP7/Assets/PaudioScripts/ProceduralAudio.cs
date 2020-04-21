@@ -20,19 +20,22 @@ public class ProceduralAudio : MonoBehaviour
 
     public static List<int> currentScale = new List<int>();
 
+    public static List<List<int>> chords = new List<List<int>>(); // chord, chordnotes
 
     // ---------------------------------
-    // VARIABLES TO SET BEFORE RUNNING
-    // (some of) these variables in the future should be linked to game parameters
+    // VARIABLES TO SET BEFORE RUNNING | (some of) these variables in the future should be linked to game parameters
 
     // amount of options per layer to choose from
     List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
 
     // amount of beats in a measure per layer
-    List<int> beatsPerMeasures = new List<int> { 8, 4, 2, 4 };// layer, amount of options
+    List<int> beatsPerMeasures = new List<int> { 8, 4, 4, 4 };// layer, amount of options
 
     // length of a beat in ticks(4th notes)
     List<int> beatLengths = new List<int> { 1, 1, 4, 1 };// layer, amount of options
+
+    // layer types (0=melody, 1=countermelody, 2=percussion, 3=chordslayer1, 4=chordslayer2, 5=chordslayer3 ...)
+    public static List<int> layerTypes = new List<int> { 0, 1, 3, 2 }; // layer, type
 
     // average note density of rythms: 10 = playing every tick, 5 = 50% chance to play every tick
     List<int> noteDensities = new List<int> { 8, 4, 10, 10 };// layer, amount of options
@@ -49,11 +52,10 @@ public class ProceduralAudio : MonoBehaviour
     private string folderLocationLoops = "../ProceduralBounceLocation/";
     private string folderLocationOneShots = "../ProceduralBounceLocationOS/";
 
-    private int bpm = 100;
+    private int bpm = 120;
 
-    private int chordAmount = 4;
-    private int chordLengthInTicks = 4;
-    private int chordLayerAmount = 3;
+    public static int chordAmount = 4;
+    public static int chordLayerAmount = 3;
     // ---------------------------------
 
     void Start()
@@ -66,7 +68,7 @@ public class ProceduralAudio : MonoBehaviour
 
         PClock.Init(bpm);
 
-        PAudioPlayer.Start();
+        PAudioPlayer.Start(); // setup fmod API
 
         GenerateAudioData();
     }
@@ -79,6 +81,7 @@ public class ProceduralAudio : MonoBehaviour
         if (PClock.nextTick)
         {
             print("tick");
+            print(PAudioPlayer.currentFq);
 
             // for every layer
             for (int layer = 0; layer < amountOfLayers; layer++)
@@ -120,7 +123,7 @@ public class ProceduralAudio : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             string soundToPlay = (string)entryListOS[0][Random.Range(0, entryListOS[0].Count)];
-            POneshots.playOneShot(folderLocationOneShots, soundToPlay);
+            POneshots.playOneShot(folderLocationOneShots, soundToPlay, true);
         }
 
     }
@@ -128,39 +131,35 @@ public class ProceduralAudio : MonoBehaviour
     void GenerateAudioData()
     {
         // set scale
-        currentScale = PHarmony.setScale(Random.Range(0, 2));
+        currentScale = PTonal.setScale(Random.Range(0, 2));
 
-        // generate chords
-        var chords = PHarmony.GenerateChords(chordAmount, chordLengthInTicks, chordLayerAmount);
-        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]] + " major");
-
-        // generate melody
-        for (int layer = 0; layer < amountOfLayers; layer++)
+        // TODO: currently there is only one layer per type. In the future this has to be a modular amount
+        for (int type = 0; type < layerTypes.Count; type++)
         {
-            // check if layer initialised
-            if (rythms.Count < layer + 1)
+            if (rythms.Count < type + 1) // check if layer is initialised
             {
-                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer], noteDensities[layer]));
-                melodies.Add(PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]));
+                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[type], beatLengths[type], noteDensities[type]));
+                melodies.Add(PTonal.GenerateTonalIntervals(rythms[type], amountOfSoundOptions[type], layerTypes[type]));
                 currentTicks.Add(0);
             }
             else
             {
-                rythms[layer] = PRythm.GenerateRythm(beatsPerMeasures[layer], beatLengths[layer], noteDensities[layer]);
-                melodies[layer] = PMelody.GenerateMelody(rythms[layer], amountOfSoundOptions[layer]);
-                currentTicks[layer] = 0;
+                rythms[type] = PRythm.GenerateRythm(beatsPerMeasures[type], beatLengths[type], noteDensities[type]);
+                melodies[type] = PTonal.GenerateTonalIntervals(rythms[type], amountOfSoundOptions[type], layerTypes[type]);
+                currentTicks[type] = 0;
             }
-            // ik wil hier dus melody 3 de grondtoon van het akkoord laten spelen
 
-            print("layer " + layer.ToString());
+            print("layer " + type.ToString());
 
             string rythmOutput = "";
-            for (int i = 0; i < rythms[layer].Count; i++) rythmOutput += rythms[layer][i].ToString();
+            for (int i = 0; i < rythms[type].Count; i++) rythmOutput += rythms[type][i].ToString();
             print(rythmOutput);
 
             string melodyOutput = "";
-            for (int i = 0; i < rythms[layer].Count; i++) melodyOutput += melodies[layer][i].ToString();
+            for (int i = 0; i < rythms[type].Count; i++) melodyOutput += melodies[type][i].ToString();
             print(melodyOutput);
         }
+
+        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]] + " major");
     }
 }

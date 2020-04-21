@@ -20,7 +20,7 @@ public class PAutoFileLoader
 
         // all layers and their info
         List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
-
+         
         foreach (FileInfo f in info)
         {
             fileNames.Add(f.Name);
