@@ -173,15 +173,17 @@ public class PTonal
         return layerMelody;
     }
 
-    public static List<int> GenerateTonalIntervals(List<int> rythm, int frequencyRange, int layerType)
+    public static List<int> GenerateTonalIntervals(List<int> rythm, int frequencyRange, ProceduralAudio.LayerType layerType)
     {
         var output = new List<int>();
 
+        //for (ProceduralAudio.LayerType type )
+
         for (int type = 0; type < ProceduralAudio.amountOfLayers + 1; type++)
         {
-            if (type == layerType)
+            if (type == (int)layerType)
             {
-                switch (layerType)
+                switch ((int)layerType)
                 {
                     case 0: // melody
                         output = GenerateMelody(rythm, frequencyRange);
@@ -205,7 +207,7 @@ public class PTonal
                         }
                         break;
                     default: // chords
-                        output = LinkChordLine(rythm, layerType - 3);
+                        output = LinkChordLine(rythm, (int)layerType - 3);
 
                         break;
                 }

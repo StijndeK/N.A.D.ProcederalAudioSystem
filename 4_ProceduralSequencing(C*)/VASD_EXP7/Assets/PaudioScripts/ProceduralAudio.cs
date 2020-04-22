@@ -24,6 +24,8 @@ public class ProceduralAudio : MonoBehaviour
 
     List<PLayer> layers = new List<PLayer>();
 
+    public enum LayerType { melody, countermelody, percussion, chords };
+
     // ---------------------------------
     // VARIABLES TO SET BEFORE RUNNING
 
@@ -68,10 +70,10 @@ public class ProceduralAudio : MonoBehaviour
 
     void InitialiseLayers()
     {
-        layers.Add(new PLayer(12, 8, 1, 0, 8, false));
-        layers.Add(new PLayer(12, 4, 1, 0, 4, false));
-        layers.Add(new PLayer(11, 4, 4, 3, 10, false));
-        layers.Add(new PLayer(1, 4, 1, 2, 10, false));
+        layers.Add(new PLayer(12, 8, 1, LayerType.melody, 8, false));
+        layers.Add(new PLayer(12, 4, 1, LayerType.countermelody, 4, false));
+        layers.Add(new PLayer(11, 4, 4, LayerType.chords, 10, false));
+        layers.Add(new PLayer(1, 4, 1, LayerType.percussion, 10, false));
     }
 
     void Update()
