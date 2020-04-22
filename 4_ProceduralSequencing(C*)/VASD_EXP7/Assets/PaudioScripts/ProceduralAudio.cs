@@ -18,7 +18,7 @@ public class ProceduralAudio : MonoBehaviour
 
     readonly List<PLayer> layers = new List<PLayer>();
 
-    public enum LayerType { melody, countermelody, percussion, soundscape, chords };
+    public enum LayerType { melody, countermelody, percussion, soundscape, chords, chords2 };
 
     // ---------------------------------
     // VARIABLES TO SET BEFORE RUNNING
@@ -27,7 +27,7 @@ public class ProceduralAudio : MonoBehaviour
     List<string> scaleInNotes = new List<string> { "c", "d", "e", "f", "g", "a", "b" };
 
     // total number of looping layers and oneshots
-    public static int amountOfLayers = 5;
+    public static int amountOfLayers = 6;
     private int amountOfSoundEffects = 1;
 
     private string folderLocationLoops = "../ProceduralBounceLocation/";
@@ -69,6 +69,7 @@ public class ProceduralAudio : MonoBehaviour
         layers.Add(new PLayer(11, 4, 4, LayerType.chords, 10, false));
         layers.Add(new PLayer(1, 4, 1, LayerType.percussion, 10, false));
         layers.Add(new PLayer(1, 1, 16, LayerType.soundscape, 10, true));
+        layers.Add(new PLayer(11, 4, 4, LayerType.chords2, 5, true));
     }
 
     void Update()
@@ -131,22 +132,24 @@ public class ProceduralAudio : MonoBehaviour
         // set scale
         currentScale = PTonal.setScale(0);
 
-        // TODO: currently there is only one layer per type. In the future this has to be a modular amount
-        for (int type = 0; type < amountOfLayers; type++)
-        {
-            layers[type].currentTick = 0;
-            layers[type].rythm = PRythm.GenerateRythm(layers[type].beatsPerMeasure, layers[type].beatLength, layers[type].noteDensity); ;
-            layers[type].melody = PTonal.GenerateTonalIntervals(layers[type].rythm, layers[type].soundOptionsAmount, layers[type].layerType);
+        // generate chords
+        chords = ProceduralAudio.chords = PTonal.GenerateChords();
 
-            print("layer " + type.ToString());
+        for (int layer = 0; layer < amountOfLayers; layer++)
+        {
+            layers[layer].currentTick = 0;
+            layers[layer].rythm = PRythm.GenerateRythm(layers[layer].beatsPerMeasure, layers[layer].beatLength, layers[layer].noteDensity); ;
+            layers[layer].melody = PTonal.GenerateTonalIntervals(layers[layer].rythm, layers[layer].soundOptionsAmount, layers[layer].layerType);
+
+            print("layer " + layer.ToString());
 
             string rythmOutput = "";
             string melodyOutput = "";
 
-            for (int i = 0; i < layers[type].rythm.Count; i++)
+            for (int i = 0; i < layers[layer].rythm.Count; i++)
             {
-                rythmOutput += layers[type].rythm[i].ToString();
-                melodyOutput += layers[type].melody[i].ToString();
+                rythmOutput += layers[layer].rythm[i].ToString();
+                melodyOutput += layers[layer].melody[i].ToString();
             }
 
             print(rythmOutput);

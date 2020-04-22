@@ -28,11 +28,9 @@ public class PTonal
         return intervals;
     }
 
-    public static List<List<int>> GenerateChords(int amountOfChords = 4, int chordLayers = 2)
+    public static List<List<int>> GenerateChords(int amountOfChords = 4, int chordLayers = 2, int layerSteps = 5)
     {
-        // TODO: react to melody
         // TODO: only take third steps
-        // TODO: creates index errors
 
         var chords = new List<List<int>>();
 
@@ -44,7 +42,7 @@ public class PTonal
 
             for (int note = 0; note < chordLayers; note++) // for every chord note
             {
-                chords[chord].Add(ProceduralAudio.currentScale[(currentChordBase + (note * 2)) % 7]); // times 2 to take third steps
+                chords[chord].Add(ProceduralAudio.currentScale[(currentChordBase + (note * layerSteps)) % 7]); // times layersteps to decide interval
             }
 
             currentChordBase = Mathf.Abs((currentChordBase + Random.Range(-2, 2)) % 7);
@@ -121,11 +119,8 @@ public class PTonal
         return output;
     }
 
-
     public static List<int> LinkChordLine(List<int> rythm, int chordLayer)
     {
-        // TODO: so in the future rythm should be received from the global chord rythm value, to allow for more chord layers to be played by different looplayers
-
         var output = new List<int>();
 
         int currentChord = 0;
@@ -135,14 +130,20 @@ public class PTonal
             if (rythm[tick] == 1)
             {
                 output.Add(ProceduralAudio.chords[currentChord][chordLayer]);
-
-                // move to next chord, loop through amount of chords
-                currentChord += 1 % ProceduralAudio.chordAmount;
             }
             else
             {
                 // TODO: add nlull instead of -1 to represent empty value (int?)
                 output.Add(-1);
+            }
+
+            // move to next chord whether note needs to play or not to sync with other chord lines
+            // TODO: make dynamic check values
+            // TODO: get this working
+            if (tick % 4 == 3)
+            {
+                // move to next chord, loop through amount of chords
+                currentChord += 1 % ProceduralAudio.chordAmount;
             }
         }
 
@@ -188,9 +189,6 @@ public class PTonal
                     case 0: // melody
                         output = GenerateMelody(rythm, frequencyRange);
 
-                        // generate chords based on generated melody
-                        ProceduralAudio.chords = GenerateChords();
-
                         // set melody layer for other layers to react to
                         melody = output;
 
@@ -208,7 +206,7 @@ public class PTonal
 
                         break;
                     default: // chords
-                        output = LinkChordLine(rythm, (int)layerType - 3);
+                        output = LinkChordLine(rythm, (int)layerType - 4); // subtract 4 for other vars in enum
 
                         break;
                 }
