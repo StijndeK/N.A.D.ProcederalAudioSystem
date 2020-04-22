@@ -200,11 +200,12 @@ public class PTonal
 
                         break;
                     case 2: // percussion
-                        for (int tick = 0; tick < rythm.Count; tick++)
-                        {
-                            if (rythm[tick] == 1) output.Add(0);
-                            else output.Add(-1);
-                        }
+                        output = GenerateMelody(rythm, frequencyRange);
+
+                        break;
+                    case 3: // soundscape
+                        output = GenerateMelody(rythm, frequencyRange);
+
                         break;
                     default: // chords
                         output = LinkChordLine(rythm, (int)layerType - 3);
