@@ -77,6 +77,30 @@ public class PTonal
         return layerMelody;
     }
 
+    public static List<int> GenerateMelodyOnChord(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
+    {
+        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
+
+        var layerMelody = new List<int>();
+
+        for (int tick = 0; tick < rythm.Count; tick++)
+        {
+            // if a note needs to be played
+            if (rythm[tick] == 1)
+            {
+                layerMelody.Add(Random.Range(0, frequencyRange));
+            }
+
+            else
+            {
+                // TODO: add nlull instead of -1 to represent empty value (int?)
+                layerMelody.Add(-1);
+            }
+        }
+
+        return layerMelody;
+    }
+
     // take one melody layer and create a layer to acompany it
     public static List<int> GenerateCounterMelody(List<int> melodyRythm, List<int> melody)
     {
@@ -153,7 +177,7 @@ public class PTonal
     {
         var output = new List<int>();
 
-        for (int type = 0; type < ProceduralAudio.layerTypes.Count + 1; type++)
+        for (int type = 0; type < ProceduralAudio.amountOfLayers + 1; type++)
         {
             if (type == layerType)
             {

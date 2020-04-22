@@ -22,31 +22,16 @@ public class ProceduralAudio : MonoBehaviour
 
     public static List<List<int>> chords = new List<List<int>>(); // chord, chordnotes
 
+    List<PLayer> layers = new List<PLayer>();
+
     // ---------------------------------
-    // VARIABLES TO SET BEFORE RUNNING | (some of) these variables in the future should be linked to game parameters
-
-    // amount of options per layer to choose from
-    List<int> amountOfSoundOptions = new List<int> {12, 12, 11, 1};// layer, amount of options
-
-    // amount of beats in a measure per layer
-    List<int> beatsPerMeasures = new List<int> { 8, 4, 4, 4 };// layer, amount of options
-
-    // length of a beat in ticks(4th notes)
-    List<int> beatLengths = new List<int> { 1, 1, 4, 1 };// layer, amount of options
-
-    // layer types (0=melody, 1=countermelody, 2=percussion, 3=chordslayer1, 4=chordslayer2, 5=chordslayer3 ...)
-    public static List<int> layerTypes = new List<int> { 0, 1, 3, 2 }; // layer, type
-
-    // average note density of rythms: 10 = playing every tick, 5 = 50% chance to play every tick
-    List<int> noteDensities = new List<int> { 8, 4, 10, 10 };// layer, amount of options
-
-    List<bool> layerOn = new List<bool> {false, false, false, false };
+    // VARIABLES TO SET BEFORE RUNNING
 
     // set to what scale is used
-    List<string> scaleInNotes = new List<string> {"c", "d", "e", "f", "g", "a", "b" };
+    List<string> scaleInNotes = new List<string> { "c", "d", "e", "f", "g", "a", "b" };
 
     // total number of looping layers and oneshots
-    private int amountOfLayers = 4;
+    public static int amountOfLayers = 4;
     private int amountOfSoundEffects = 1;
 
     private string folderLocationLoops = "../ProceduralBounceLocation/";
@@ -56,13 +41,12 @@ public class ProceduralAudio : MonoBehaviour
 
     public static int chordAmount = 4;
     public static int chordLayerAmount = 3;
-    // ---------------------------------
 
     void Start()
     {
         // read looping audio
         entryList = PAutoFileLoader.ReadFiles(folderLocationLoops, amountOfLayers);
-        for(int ii = 0; ii < layerOn.Count; ii++)
+        for(int ii = 0; ii < amountOfLayers; ii++)
         {
             for (int i = 0; i < entryList[ii].Count; i++)
             {
@@ -77,7 +61,17 @@ public class ProceduralAudio : MonoBehaviour
 
         PAudioPlayer.Start(); // setup fmod API
 
+        InitialiseLayers();
+
         GenerateAudioData();
+    }
+
+    void InitialiseLayers()
+    {
+        layers.Add(new PLayer(12, 8, 1, 0, 8, false));
+        layers.Add(new PLayer(12, 4, 1, 0, 4, false));
+        layers.Add(new PLayer(11, 4, 4, 3, 10, false));
+        layers.Add(new PLayer(1, 4, 1, 2, 10, false));
     }
 
     void Update()
@@ -88,7 +82,6 @@ public class ProceduralAudio : MonoBehaviour
         if (PClock.nextTick)
         {
             print("tick");
-            print(PAudioPlayer.currentFq);
 
             // for every layer
             for (int layer = 0; layer < amountOfLayers; layer++)
@@ -97,7 +90,7 @@ public class ProceduralAudio : MonoBehaviour
                 currentTicks[layer] = currentTicks[layer] % rythms[layer].Count;
 
                 // check if layer is active
-                if(layerOn[layer])
+                if(layers[layer].layerOn)
                 {
                     // check rythm
                     if (rythms[layer][currentTicks[layer]] == 1)
@@ -118,13 +111,13 @@ public class ProceduralAudio : MonoBehaviour
 
         // toggle layers
         if (Input.GetKeyDown(KeyCode.Alpha1))
-            layerOn[0] = !layerOn[0];
+            layers[0].layerOn = !layers[0].layerOn;
         if (Input.GetKeyDown(KeyCode.Alpha2))
-            layerOn[1] = !layerOn[1];
+            layers[1].layerOn = !layers[1].layerOn;
         if (Input.GetKeyDown(KeyCode.Alpha3))
-            layerOn[2] = !layerOn[2];
+            layers[2].layerOn = !layers[2].layerOn;
         if (Input.GetKeyDown(KeyCode.Alpha4))
-            layerOn[3] = !layerOn[3];
+            layers[3].layerOn = !layers[3].layerOn;
 
         // call oneshots
         if (Input.GetKeyDown(KeyCode.A))
@@ -140,18 +133,18 @@ public class ProceduralAudio : MonoBehaviour
         currentScale = PTonal.setScale(0);
 
         // TODO: currently there is only one layer per type. In the future this has to be a modular amount
-        for (int type = 0; type < layerTypes.Count; type++)
+        for (int type = 0; type < amountOfLayers; type++)
         {
             if (rythms.Count < type + 1) // check if layer is initialised
             {
-                rythms.Add(PRythm.GenerateRythm(beatsPerMeasures[type], beatLengths[type], noteDensities[type]));
-                melodies.Add(PTonal.GenerateTonalIntervals(rythms[type], amountOfSoundOptions[type], layerTypes[type]));
+                rythms.Add(PRythm.GenerateRythm(layers[type].beatsPerMeasure, layers[type].beatLength, layers[type].noteDensity));
+                melodies.Add(PTonal.GenerateTonalIntervals(rythms[type], layers[type].soundOptionsAmount, layers[type].layerType));
                 currentTicks.Add(0);
             }
             else
             {
-                rythms[type] = PRythm.GenerateRythm(beatsPerMeasures[type], beatLengths[type], noteDensities[type]);
-                melodies[type] = PTonal.GenerateTonalIntervals(rythms[type], amountOfSoundOptions[type], layerTypes[type]);
+                rythms[type] = PRythm.GenerateRythm(layers[type].beatsPerMeasure, layers[type].beatLength, layers[type].noteDensity);
+                melodies[type] = PTonal.GenerateTonalIntervals(rythms[type], layers[type].soundOptionsAmount, layers[type].layerType);
                 currentTicks[type] = 0;
             }
 
@@ -166,7 +159,7 @@ public class ProceduralAudio : MonoBehaviour
             print(melodyOutput);
         }
 
-        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]]);
+        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + chords[chord][0]);
     }
 
 }
