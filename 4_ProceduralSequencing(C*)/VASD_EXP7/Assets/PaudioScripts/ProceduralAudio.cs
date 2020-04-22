@@ -43,7 +43,7 @@ public class ProceduralAudio : MonoBehaviour
     List<bool> layerOn = new List<bool> {false, false, false, false };
 
     // set to what scale is used
-    List<string> scaleInNotes = new List<string> {"c", "c#", "d", "d#", "e", "f", "f#","g", "g#", "a", "a#", "b" };
+    List<string> scaleInNotes = new List<string> {"c", "d", "e", "f", "g", "a", "b" };
 
     // total number of looping layers and oneshots
     private int amountOfLayers = 4;
@@ -52,7 +52,7 @@ public class ProceduralAudio : MonoBehaviour
     private string folderLocationLoops = "../ProceduralBounceLocation/";
     private string folderLocationOneShots = "../ProceduralBounceLocationOS/";
 
-    private int bpm = 120;
+    private int bpm = 100;
 
     public static int chordAmount = 4;
     public static int chordLayerAmount = 3;
@@ -62,7 +62,14 @@ public class ProceduralAudio : MonoBehaviour
     {
         // read looping audio
         entryList = PAutoFileLoader.ReadFiles(folderLocationLoops, amountOfLayers);
-
+        for(int ii = 0; ii < layerOn.Count; ii++)
+        {
+            for (int i = 0; i < entryList[ii].Count; i++)
+            {
+                print(entryList[ii][i]);
+            }
+        }
+        
         // read oneshots
         entryListOS = PAutoFileLoader.ReadFiles(folderLocationOneShots, amountOfSoundEffects);
 
@@ -125,13 +132,12 @@ public class ProceduralAudio : MonoBehaviour
             string soundToPlay = (string)entryListOS[0][Random.Range(0, entryListOS[0].Count)];
             POneshots.playOneShot(folderLocationOneShots, soundToPlay, true);
         }
-
     }
 
     void GenerateAudioData()
     {
         // set scale
-        currentScale = PTonal.setScale(Random.Range(0, 2));
+        currentScale = PTonal.setScale(0);
 
         // TODO: currently there is only one layer per type. In the future this has to be a modular amount
         for (int type = 0; type < layerTypes.Count; type++)
@@ -160,6 +166,7 @@ public class ProceduralAudio : MonoBehaviour
             print(melodyOutput);
         }
 
-        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]] + " major");
+        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + scaleInNotes[chords[chord][0]]);
     }
+
 }

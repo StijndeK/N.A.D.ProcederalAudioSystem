@@ -30,7 +30,9 @@ public class PTonal
 
     public static List<List<int>> GenerateChords(int amountOfChords = 4, int chordLayers = 2)
     {
-        // TODO: react to melody or have melody react to chords
+        // TODO: react to melody
+        // TODO: only take third steps
+        // TODO: creates index errors
 
         var chords = new List<List<int>>();
 
@@ -45,7 +47,7 @@ public class PTonal
                 chords[chord].Add(ProceduralAudio.currentScale[(currentChordBase + (note * 2)) % 7]); // times 2 to take third steps
             }
 
-            currentChordBase += Random.Range(-2, 2) % 7; // calculate new chord
+            currentChordBase = Mathf.Abs((currentChordBase + Random.Range(-2, 2)) % 7);
         }
 
         return chords; // chord, notes (1, 3, 5)
@@ -102,9 +104,6 @@ public class PTonal
 
         var output = new List<int>();
 
-        // get chords
-        // choose layer
-        // set it over the rythm
         int currentChord = 0;
 
         for (int tick = 0; tick < rythm.Count; tick++)
@@ -124,6 +123,30 @@ public class PTonal
         }
 
         return output;
+    }
+
+    public static List<int> GeneratePercussionPart(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
+    {
+        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
+
+        var layerMelody = new List<int>();
+
+        for (int tick = 0; tick < rythm.Count; tick++)
+        {
+            // if a note needs to be played
+            if (rythm[tick] == 1)
+            {
+                layerMelody.Add(ProceduralAudio.currentScale[Random.Range(0, frequencyRange)]);
+            }
+
+            else
+            {
+                // TODO: add nlull instead of -1 to represent empty value (int?)
+                layerMelody.Add(-1);
+            }
+        }
+
+        return layerMelody;
     }
 
     public static List<int> GenerateTonalIntervals(List<int> rythm, int frequencyRange, int layerType)
