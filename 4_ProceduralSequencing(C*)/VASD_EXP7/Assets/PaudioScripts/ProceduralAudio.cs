@@ -6,14 +6,10 @@ using FMOD;
 
 public class ProceduralAudio : MonoBehaviour
 {
-    List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
-    List<List<string>> entryListOS = new List<List<string>>(); // layer, tracks, filename
+    public static List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
+    public static List<List<string>> entryListOS = new List<List<string>>(); // layer, tracks, filename
 
-    public static List<int> currentScale = new List<int>();
-
-    public static List<List<int>> chords = new List<List<int>>(); // chord, chordnotes
-
-    public static List<PLayer> layers = new List<PLayer>(); // loop layers
+    public static List<PLoopLayer> layers = new List<PLoopLayer>(); // loop layers
     public static List<POSLayer> oSLayers = new List<POSLayer>(); // oneshot layers
 
     public enum LayerType { melody, countermelody, percussion, soundscape, chords, chords2 };
@@ -50,17 +46,17 @@ public class ProceduralAudio : MonoBehaviour
 
         PClock.Init(bpm);
 
-        GenerateAudioData();
+        PAudioDataSystem.GenerateAudioData();
     }
 
     void InitialiseLayers()
     {
-        layers.Add(new PLayer(12, 8, 1, LayerType.melody, 8, false));
-        layers.Add(new PLayer(12, 4, 1, LayerType.countermelody, 4, false));
-        layers.Add(new PLayer(11, 4, 4, LayerType.chords, 10, false));
-        layers.Add(new PLayer(1, 4, 1, LayerType.percussion, 10, false));
-        layers.Add(new PLayer(1, 1, 16, LayerType.soundscape, 10, true));
-        layers.Add(new PLayer(11, 4, 4, LayerType.chords2, 5, true));
+        layers.Add(new PLoopLayer(12, 8, 1, LayerType.melody, 8, false));
+        layers.Add(new PLoopLayer(12, 4, 1, LayerType.countermelody, 4, false));
+        layers.Add(new PLoopLayer(11, 4, 4, LayerType.chords, 10, false));
+        layers.Add(new PLoopLayer(1, 4, 1, LayerType.percussion, 10, false));
+        layers.Add(new PLoopLayer(1, 1, 16, LayerType.soundscape, 10, true));
+        layers.Add(new PLoopLayer(11, 4, 4, LayerType.chords2, 5, true));
 
         oSLayers.Add(new POSLayer(4));
     }
@@ -73,60 +69,8 @@ public class ProceduralAudio : MonoBehaviour
         // sequence audio
         PSequencer.Sequencer();
 
-        // generate new data
-        if (Input.GetKeyDown(KeyCode.Space))
-            GenerateAudioData();
+        PAudioPlayer.Update();
 
-        // toggle layers
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-            layers[0].layerOn = !layers[0].layerOn;
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-            layers[1].layerOn = !layers[1].layerOn;
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-            layers[2].layerOn = !layers[2].layerOn;
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-            layers[3].layerOn = !layers[3].layerOn;
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-            layers[4].layerOn = !layers[4].layerOn;
-
-        // call oneshots
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            // TODO: oneshots now load over a normal audio layer
-            POneshots.playOneShot(0, Random.Range(0, entryListOS[0].Count));
-        }
+        PParameterLinker.Update();
     }
-
-    void GenerateAudioData()
-    {
-        // set scale
-        currentScale = PTonal.setScale(0);
-
-        // generate chords
-        chords = ProceduralAudio.chords = PTonal.GenerateChords();
-
-        for (int layer = 0; layer < amountOfLayers; layer++)
-        {
-            layers[layer].currentTick = 0;
-            layers[layer].rythm = PRythm.GenerateRythm(layers[layer].beatsPerMeasure, layers[layer].beatLength, layers[layer].noteDensity); ;
-            layers[layer].melody = PTonal.GenerateTonalIntervals(layers[layer].rythm, layers[layer].soundOptionsAmount, layers[layer].layerType);
-
-            print("layer " + layer.ToString());
-
-            string rythmOutput = "";
-            string melodyOutput = "";
-
-            for (int i = 0; i < layers[layer].rythm.Count; i++)
-            {
-                rythmOutput += layers[layer].rythm[i].ToString();
-                melodyOutput += layers[layer].melody[i].ToString();
-            }
-
-            print(rythmOutput);
-            print(melodyOutput);
-        }
-
-        for (int chord = 0; chord < chords.Count; chord++) print("chord: " + chords[chord][0]);
-    }
-
 }

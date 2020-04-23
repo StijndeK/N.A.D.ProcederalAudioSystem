@@ -17,6 +17,16 @@ public class PAudioPlayer
         uint version;
         corSystem.getVersion(out version);
         corSystem.createChannelGroup("master", out channelgroup);
+
+        //DSP pLowPass;
+        //corSystem.createDSPByType(DSP_TYPE.LOWPASS, out pLowPass);
+        //channelgroup.addDSP(0, pLowPass31212  124);
+        //pLowPass.setParameterFloat(0, 50.0f);
+    }
+
+    public static void Update()
+    {
+        corSystem.update();
     }
 
     public static void InitSound(int currentLayer, string fileName, string folderLocation, bool oneshot = false)

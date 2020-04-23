@@ -42,7 +42,7 @@ public class PTonal
 
             for (int note = 0; note < chordLayers; note++) // for every chord note
             {
-                chords[chord].Add(ProceduralAudio.currentScale[(currentChordBase + (note * layerSteps)) % 7]); // times layersteps to decide interval
+                chords[chord].Add(PAudioDataSystem.currentScale[(currentChordBase + (note * layerSteps)) % 7]); // times layersteps to decide interval
             }
 
             currentChordBase = Mathf.Abs((currentChordBase + Random.Range(-2, 2)) % 7);
@@ -62,7 +62,7 @@ public class PTonal
             // if a note needs to be played
             if (rythm[tick] == 1)
             {
-                layerMelody.Add(ProceduralAudio.currentScale[Random.Range(0, frequencyRange)]);
+                layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
             }
 
             else
@@ -129,7 +129,7 @@ public class PTonal
         {
             if (rythm[tick] == 1)
             {
-                output.Add(ProceduralAudio.chords[currentChord][chordLayer]);
+                output.Add(PAudioDataSystem.chords[currentChord][chordLayer]);
             }
             else
             {
@@ -161,7 +161,7 @@ public class PTonal
             // if a note needs to be played
             if (rythm[tick] == 1)
             {
-                layerMelody.Add(ProceduralAudio.currentScale[Random.Range(0, frequencyRange)]);
+                layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
             }
 
             else
