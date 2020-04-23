@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class PAutoFileLoader
 {
     // read files for looping sounds 
-    public static List<List<string>> ReadFiles(string directoryLocation, int layerAmount)
+    public static List<List<string>> ReadFiles(string directoryLocation, int layerAmount, bool oneShotsLayers = false)
     {
         // TODO: track reading isnt really necessary anymore. could also be moved to end of name to allow for easier filenaming from daws
 
@@ -39,7 +39,7 @@ public class PAutoFileLoader
             entryList[int.Parse(fileNames[i][0].ToString()) - 1].Add(fileNames[i]);
 
             // initialise sounds
-            PAudioPlayer.InitSound(int.Parse(fileNames[i][0].ToString()) - 1, fileNames[i], directoryLocation);
+            PAudioPlayer.InitSound(int.Parse(fileNames[i][0].ToString()) - 1, fileNames[i], directoryLocation, oneShotsLayers);
         }
 
         return entryList;

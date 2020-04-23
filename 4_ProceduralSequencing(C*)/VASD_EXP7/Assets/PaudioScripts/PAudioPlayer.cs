@@ -9,6 +9,8 @@ public class PAudioPlayer
     static FMOD.System corSystem;
     static ChannelGroup channelgroup;
 
+    // TODO: automatically recognise if oneshot of loop and load from same list/class
+
     public static void Start()
     {
         corSystem = FMODUnity.RuntimeManager.CoreSystem;
@@ -17,20 +19,27 @@ public class PAudioPlayer
         corSystem.createChannelGroup("master", out channelgroup);
     }
 
-    public static void InitSound(int currentLayer, string fileName, string folderLocation)
+    public static void InitSound(int currentLayer, string fileName, string folderLocation, bool oneshot = false)
     {
         Sound tempSound;
 
         corSystem.createSound(folderLocation + fileName, MODE.DEFAULT, out tempSound);
 
-        ProceduralAudio.layers[currentLayer].sounds.Add(tempSound);
+        if (oneshot)
+        {
+            ProceduralAudio.oSLayers[currentLayer].sounds.Add(tempSound);
+        }
+        else
+        {
+            ProceduralAudio.layers[currentLayer].sounds.Add(tempSound);
+        }
     }
 
-    public static void PlayFile(string folderLocation, string fileName, int layer, int soundIndex, bool reverse = false)
+    public static void PlayFile(int layer, int soundIndex, bool reverse = false, bool oneshot = false)
     {
         Channel channel;
 
-        Sound sound = ProceduralAudio.layers[layer].sounds[soundIndex];
+        Sound sound = (oneshot) ? ProceduralAudio.oSLayers[layer].sounds[soundIndex] : ProceduralAudio.layers[layer].sounds[soundIndex];
 
         //if (reverse)
         //{
@@ -39,10 +48,5 @@ public class PAudioPlayer
         //}
 
         corSystem.playSound(sound, channelgroup, false, out channel);
-    }
-
-    public static void StopFile()
-    {
-        
     }
 }
