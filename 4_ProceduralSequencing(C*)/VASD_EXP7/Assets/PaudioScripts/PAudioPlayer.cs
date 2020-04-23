@@ -8,9 +8,6 @@ public class PAudioPlayer
     // FMOD API
     static FMOD.System corSystem;
     static ChannelGroup channelgroup;
-    static Channel channel;
-
-    public static float currentFq;
 
     public static void Start()
     {
@@ -20,18 +17,32 @@ public class PAudioPlayer
         corSystem.createChannelGroup("master", out channelgroup);
     }
 
-    public static void PlayFile(string folderLocation, string fileName, bool reverse = false)
+    public static void InitSound(int currentLayer, string fileName, string folderLocation)
     {
-        // TODO: DSP toevoegen hier
+        Sound tempSound;
 
-        if (reverse)
-        {
-            channel.getFrequency(out currentFq);
-            channel.setFrequency(0 - currentFq);
-        }
+        corSystem.createSound(folderLocation + fileName, MODE.DEFAULT, out tempSound);
 
-        Sound sound;
-        corSystem.createSound(folderLocation + fileName, MODE.DEFAULT, out sound);
+        ProceduralAudio.layers[currentLayer].sounds.Add(tempSound);
+    }
+
+    public static void PlayFile(string folderLocation, string fileName, int layer, int soundIndex, bool reverse = false)
+    {
+        Channel channel;
+
+        Sound sound = ProceduralAudio.layers[layer].sounds[soundIndex];
+
+        //if (reverse)
+        //{
+        //    channel.getFrequency(out currentFq);
+        //    channel.setFrequency(0 - currentFq);
+        //}
+
         corSystem.playSound(sound, channelgroup, false, out channel);
+    }
+
+    public static void StopFile()
+    {
+        
     }
 }

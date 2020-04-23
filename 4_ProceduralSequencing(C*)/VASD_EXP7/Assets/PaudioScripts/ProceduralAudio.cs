@@ -16,7 +16,7 @@ public class ProceduralAudio : MonoBehaviour
 
     public static List<List<int>> chords = new List<List<int>>(); // chord, chordnotes
 
-    readonly List<PLayer> layers = new List<PLayer>();
+    public static List<PLayer> layers = new List<PLayer>();
 
     public enum LayerType { melody, countermelody, percussion, soundscape, chords, chords2 };
 
@@ -40,24 +40,17 @@ public class ProceduralAudio : MonoBehaviour
 
     void Start()
     {
+        PAudioPlayer.Start(); // setup fmod API
+
+        InitialiseLayers();
+
         // read looping audio
         entryList = PAutoFileLoader.ReadFiles(folderLocationLoops, amountOfLayers);
-        for(int ii = 0; ii < amountOfLayers; ii++)
-        {
-            for (int i = 0; i < entryList[ii].Count; i++)
-            {
-                print(entryList[ii][i]);
-            }
-        }
         
         // read oneshots
         entryListOS = PAutoFileLoader.ReadFiles(folderLocationOneShots, amountOfSoundEffects);
 
         PClock.Init(bpm);
-
-        PAudioPlayer.Start(); // setup fmod API
-
-        InitialiseLayers();
 
         GenerateAudioData();
     }
@@ -94,9 +87,9 @@ public class ProceduralAudio : MonoBehaviour
                     if (layers[layer].rythm[layers[layer].currentTick] == 1)
                     {
                         // play audio
-                        PAudioPlayer.PlayFile(folderLocationLoops, (string)entryList[layer][layers[layer].melody[layers[layer].currentTick]]);
+                        PAudioPlayer.PlayFile(folderLocationLoops, (string)entryList[layer][layers[layer].melody[layers[layer].currentTick]], layer, layers[layer].melody[layers[layer].currentTick]);
                     }
-                }
+                } 
 
                 // next tick
                 layers[layer].currentTick += 1;
@@ -122,8 +115,9 @@ public class ProceduralAudio : MonoBehaviour
         // call oneshots
         if (Input.GetKeyDown(KeyCode.A))
         {
+            // TODO: oneshots now load over a normal audio layer
             string soundToPlay = (string)entryListOS[0][Random.Range(0, entryListOS[0].Count)];
-            POneshots.playOneShot(folderLocationOneShots, soundToPlay, true);
+            POneshots.playOneShot(folderLocationOneShots, soundToPlay);
         }
     }
 

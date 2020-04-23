@@ -8,6 +8,6 @@ public class POneshots
     public static void playOneShot(string folderLocation, string fileName, bool reverse = false, float ducking = 0)
     {
         // TODO: add ducking functionality
-        PAudioPlayer.PlayFile(folderLocation, fileName, reverse);
+        //PAudioPlayer.PlayFile(folderLocation, fileName, reverse);
     }
 }

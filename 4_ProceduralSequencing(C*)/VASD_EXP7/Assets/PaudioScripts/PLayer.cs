@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using FMOD;
+
 public class PLayer
 {
     public int soundOptionsAmount;     // amount of options per layer to choose from
@@ -13,6 +15,8 @@ public class PLayer
 
     public List<int> rythm;
     public List<int> melody;
+
+    public List<Sound> sounds = new List<Sound>();
 
     public PLayer(int soundOptionsAmount, int beatsPerMeasure, int beatLength, ProceduralAudio.LayerType layerType, int noteDensity, bool layerOn, int currentTick = 0)
     {

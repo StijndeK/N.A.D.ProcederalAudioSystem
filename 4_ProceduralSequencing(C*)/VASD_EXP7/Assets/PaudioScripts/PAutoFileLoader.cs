@@ -37,6 +37,9 @@ public class PAutoFileLoader
         {
             // pass name in layer per track to entry list
             entryList[int.Parse(fileNames[i][0].ToString()) - 1].Add(fileNames[i]);
+
+            // initialise sounds
+            PAudioPlayer.InitSound(int.Parse(fileNames[i][0].ToString()) - 1, fileNames[i], directoryLocation);
         }
 
         return entryList;
