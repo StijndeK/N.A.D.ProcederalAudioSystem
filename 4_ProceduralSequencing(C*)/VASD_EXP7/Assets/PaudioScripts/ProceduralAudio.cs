@@ -6,9 +6,6 @@ using FMOD;
 
 public class ProceduralAudio : MonoBehaviour
 {
-    // TODO: INREADME: niet unityobjectcomponent based systeem
-    // TODO: create scale size variable
-
     List<List<string>> entryList = new List<List<string>>(); // layer, tracks, filename
     List<List<string>> entryListOS = new List<List<string>>(); // layer, tracks, filename
 
@@ -73,31 +70,8 @@ public class ProceduralAudio : MonoBehaviour
         // receive ticks
         PClock.Update();
 
-        if (PClock.nextTick)
-        {
-            print("tick");
-
-            // for every layer
-            for (int layer = 0; layer < amountOfLayers; layer++)
-            {
-                // convert tick number into measure
-                layers[layer].currentTick = layers[layer].currentTick % layers[layer].rythm.Count;
-
-                // check if layer is active
-                if(layers[layer].layerOn)
-                {
-                    // check rythm
-                    if (layers[layer].rythm[layers[layer].currentTick] == 1)
-                    {
-                        // play audio
-                        PAudioPlayer.PlayFile(layer, layers[layer].melody[layers[layer].currentTick]);
-                    }
-                } 
-
-                // next tick
-                layers[layer].currentTick += 1;
-            }
-        }
+        // sequence audio
+        PSequencer.Sequencer();
 
         // generate new data
         if (Input.GetKeyDown(KeyCode.Space))
