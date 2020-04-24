@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class PTonal
 {
-    public static List<int> melody = new List<int>();
     public static List<int> chordsRythm = new List<int>();
-
-    // TODO: chords moeten een eigen ritme losstaand vanuit procedural audio class
 
     public static List<int> setScale(int majMin)
     {
-        // TODO: other modes support
-        // TODO: INREADME: right now only an octave per sound can be added, which makes it hard for scales when the base note can't be in the bass
+        // TODO: support other modes 
 
         List<int> intervals = new List<int>();
 
@@ -30,8 +26,6 @@ public class PTonal
 
     public static List<List<int>> GenerateChords(int amountOfChords = 4, int chordLayers = 2, int layerSteps = 5)
     {
-        // TODO: only take third steps
-
         var chords = new List<List<int>>();
 
         int currentChordBase = Random.Range(0, 7);
@@ -51,134 +45,9 @@ public class PTonal
         return chords; // chord, notes (1, 3, 5)
     }
 
-    public static List<int> GenerateMelody(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
-    {
-        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
-
-        var layerMelody = new List<int>();
-
-        for (int tick = 0; tick < rythm.Count; tick++)
-        {
-            // if a note needs to be played
-            if (rythm[tick] == 1)
-            {
-                layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
-            }
-
-            else
-            {
-                // TODO: add nlull instead of -1 to represent empty value (int?)
-                layerMelody.Add(-1);
-            }
-        }
-
-        return layerMelody;
-    }
-
-    public static List<int> GenerateMelodyOnChord(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
-    {
-        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
-
-        var layerMelody = new List<int>();
-
-        for (int tick = 0; tick < rythm.Count; tick++)
-        {
-            // if a note needs to be played
-            if (rythm[tick] == 1)
-            {
-                layerMelody.Add(Random.Range(0, frequencyRange));
-            }
-
-            else
-            {
-                // TODO: add nlull instead of -1 to represent empty value (int?)
-                layerMelody.Add(-1);
-            }
-        }
-
-        return layerMelody;
-    }
-
-    // take one melody layer and create a layer to acompany it
-    public static List<int> GenerateCounterMelody(List<int> melodyRythm, List<int> melody)
-    {
-        // TODO: recognise empty notes from input melody instead of treating them as a zero
-        // TODO: find/design a good algorythm for counter melodys
-
-        var output = new List<int>();
-
-        for (int tick = 0; tick < melodyRythm.Count; tick++)
-        {
-            if (melodyRythm[tick] == 1)
-            {
-                // add a note 2 steps below input melody
-                output.Add(melody[tick] - 2 % 7);
-            }
-        }
-
-        return output;
-    }
-
-    public static List<int> LinkChordLine(List<int> rythm, int chordLayer)
-    {
-        var output = new List<int>();
-
-        int currentChord = 0;
-
-        for (int tick = 0; tick < rythm.Count; tick++)
-        {
-            if (rythm[tick] == 1)
-            {
-                output.Add(PAudioDataSystem.chords[currentChord][chordLayer]);
-            }
-            else
-            {
-                // TODO: add nlull instead of -1 to represent empty value (int?)
-                output.Add(-1);
-            }
-
-            // move to next chord whether note needs to play or not to sync with other chord lines
-            // TODO: make dynamic check values
-            // TODO: get this working
-            if (tick % 4 == 3)
-            {
-                // move to next chord, loop through amount of chords
-                currentChord += 1 % ProceduralAudio.chordAmount;
-            }
-        }
-
-        return output;
-    }
-
-    public static List<int> GeneratePercussionPart(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
-    {
-        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
-
-        var layerMelody = new List<int>();
-
-        for (int tick = 0; tick < rythm.Count; tick++)
-        {
-            // if a note needs to be played
-            if (rythm[tick] == 1)
-            {
-                layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
-            }
-
-            else
-            {
-                // TODO: add nlull instead of -1 to represent empty value (int?)
-                layerMelody.Add(-1);
-            }
-        }
-
-        return layerMelody;
-    }
-
     public static List<int> GenerateTonalIntervals(List<int> rythm, int frequencyRange, ProceduralAudio.LayerType layerType)
     {
         var output = new List<int>();
-
-        //for (ProceduralAudio.LayerType type )
 
         for (int type = 0; type < ProceduralAudio.amountOfLayers + 1; type++)
         {
@@ -187,10 +56,7 @@ public class PTonal
                 switch ((int)layerType)
                 {
                     case 0: // melody
-                        output = GenerateMelody(rythm, frequencyRange);
-
-                        // set melody layer for other layers to react to
-                        melody = output;
+                        output = GenerateChordBasedMelody(rythm, new List<int> { 0, 2, 4 });
 
                         break;
                     case 1: // countermelody
@@ -216,5 +82,98 @@ public class PTonal
         }
 
         return output;
+    }
+
+    public static List<int> GenerateMelody(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
+    {
+        if (frequencyRange > 7) frequencyRange = 7; // max one octave per layer
+
+        var layerMelody = new List<int>();
+
+        for (int tick = 0; tick < rythm.Count; tick++)
+        {
+            // if a note needs to be played
+            if (rythm[tick] == 1)
+            {
+                layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
+            }
+
+            else
+            {
+                // TODO: add null instead of -1 to represent empty value (int?)
+                layerMelody.Add(-1);
+            }
+        }
+
+        return layerMelody;
+    }
+
+    // returns a list of intervals that have to be put on top of the current chord in the sequencer
+    public static List<int> GenerateChordBasedMelody(List<int> rythm, List<int> chordNoteOptions)
+    {
+        var layerMelody = new List<int>();
+
+        for (int tick = 0; tick < rythm.Count; tick++)
+        {
+            // if a note needs to be played
+            if (rythm[tick] == 1)
+            {
+                //layerMelody.Add(PAudioDataSystem.currentScale[Random.Range(0, frequencyRange)]);
+                layerMelody.Add(chordNoteOptions[Random.Range(0, chordNoteOptions.Count)]);
+            }
+
+            else
+            {
+                // TODO: add null instead of -1 to represent empty value (int?)
+                layerMelody.Add(-1);
+            }
+        }
+
+        return layerMelody;
+    }
+
+    // take one melody layer and create a layer to acompany it
+    public static List<int> GenerateCounterMelody(List<int> melodyRythm, List<int> melody)
+    {
+        var output = new List<int>();
+
+        return output;
+    }
+
+    public static List<int> LinkChordLine(List<int> rythm, int chordLayer)
+    {
+        var output = new List<int>();
+
+        int currentChord = 0;
+
+        for (int tick = 0; tick < rythm.Count; tick++)
+        {
+            if (rythm[tick] == 1)
+            {
+                output.Add(PAudioDataSystem.chords[currentChord][chordLayer]);
+            }
+            else
+            {
+                // TODO: add nlull instead of -1 to represent empty value (int?)
+                output.Add(-1);
+            }
+
+            // TODO: make dynamic check values for other rythms
+            // move to next chord whether note needs to play or not to sync with other chord lines
+            if (tick % 4 == 3)
+            {
+                // move to next chord, loop through amount of chords
+                currentChord += 1 % ProceduralAudio.chordAmount;
+            }
+        }
+
+        return output;
+    }
+
+    public static List<int> GeneratePercussionPart(List<int> rythm, int frequencyRange) // custom amount of ticks allows for polyrythm
+    {
+        var layerMelody = new List<int>();
+
+        return layerMelody;
     }
 }

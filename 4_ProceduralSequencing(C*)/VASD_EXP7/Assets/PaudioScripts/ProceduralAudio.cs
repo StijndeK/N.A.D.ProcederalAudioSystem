@@ -14,11 +14,7 @@ public class ProceduralAudio : MonoBehaviour
 
     public enum LayerType { melody, countermelody, percussion, soundscape, chords, chords2 };
 
-    // ---------------------------------
-    // VARIABLES TO SET BEFORE RUNNING
-
-    // set to what scale is used
-    List<string> scaleInNotes = new List<string> { "c", "d", "e", "f", "g", "a", "b" };
+    // --- variables to set before running ---
 
     // total number of looping layers and oneshots
     public static int amountOfLayers = 6;
@@ -46,7 +42,7 @@ public class ProceduralAudio : MonoBehaviour
 
         PClock.Init(bpm);
 
-        PAudioDataSystem.GenerateAudioData();
+        PParameterLinker.Start();
     }
 
     void InitialiseLayers()

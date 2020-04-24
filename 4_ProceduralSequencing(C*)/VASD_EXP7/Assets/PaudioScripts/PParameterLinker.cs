@@ -4,35 +4,48 @@ using UnityEngine;
 
 public class PParameterLinker : MonoBehaviour
 {
-    List<int> gameParameters = new List<int>();
+    // This is where to put the receivers and change listeners of game paramters
+    // and set what cycles they need to adapt
+    // or test with controler input.
+
+    // !! This is the only class that needs to be adapted when implementing this system into a game.
+
+    public static void Start()
+    {
+        // create cycles
+        List<int> layers = new List<int>();
+        for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++) layers.Add(layer);
+
+        PAudioDataSystem.cycles.Add(new PCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody }, layers, true));
+
+        PAudioDataSystem.GenerateMacroAudioData();
+        PAudioDataSystem.GenerateCycleAudioData(PAudioDataSystem.cycles[0]);
+        PAudioDataSystem.AudioDataTerminalOutput();
+
+        PAudioDataSystem.timedCycles.Add(new PTimedCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody}, new List<int> {1}, false, 0, 8)); // so here every 8 ticks the countermelody changes rythm and melody
+
+        // link cycles to parameters here ..
+    }
 
     public static void Update()
     {
         ControlerInput();
     }
 
-    public static void NewCycle()
+    static void NewLinkedParameter(PCycle cycle, float input)
     {
-        // Change data before generating new cycle here:
-
-        // generate new cycle
-        PAudioDataSystem.GenerateAudioData();
-    }
-
-    public static void SetNewRythmData(int layer, int beatsPerMeasure, int beatLength, int noteDensity)
-    {
-        // TODO: probability algorythm
-
-        ProceduralAudio.layers[layer].beatsPerMeasure = beatsPerMeasure;
-        ProceduralAudio.layers[layer].beatLength = beatLength;
-        ProceduralAudio.layers[layer].noteDensity = noteDensity;
+        // if input changed -> do something to cycle
     }
 
     static void ControlerInput()
     {
         // generate new data
         if (Input.GetKeyDown(KeyCode.Space))
-            NewCycle();
+        {
+            PAudioDataSystem.GenerateMacroAudioData();
+            PAudioDataSystem.GenerateCycleAudioData(PAudioDataSystem.cycles[0]);
+            PAudioDataSystem.AudioDataTerminalOutput();
+        }
 
         var layers = ProceduralAudio.layers;
 
@@ -51,7 +64,6 @@ public class PParameterLinker : MonoBehaviour
         // call oneshots
         if (Input.GetKeyDown(KeyCode.A))
         {
-            // TODO: oneshots now load over a normal audio layer
             POneshots.playOneShot(0, Random.Range(0, ProceduralAudio.entryListOS[0].Count));
         }
     }

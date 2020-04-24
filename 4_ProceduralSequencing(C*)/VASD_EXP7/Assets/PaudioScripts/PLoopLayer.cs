@@ -19,7 +19,6 @@ public class PLoopLayer : PLayer
 
     public PLoopLayer(int soundOptionsAmount, int beatsPerMeasure, int beatLength, ProceduralAudio.LayerType layerType, int noteDensity, bool layerOn, int currentTick = 0) : base(soundOptionsAmount)
     {
-        //this.soundOptionsAmount = soundOptionsAmount;
         this.beatsPerMeasure = beatsPerMeasure;
         this.beatLength = beatLength;
         this.layerType = layerType;
