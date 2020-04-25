@@ -35,7 +35,7 @@ The following diagram depicts the working of the layer classes. A layer can be a
 ### General Dataflow
 ![PI_Concept-Dataflow green](https://user-images.githubusercontent.com/31696336/80291955-6fbdd000-8752-11ea-9429-48b1b7a9ca80.png)
 
-##Current status
+## Current status
 The most important goals for this project are to improve the audio designing process by removing the obstructions in the workflow and allow for more experimentation, by making procedural systems easier to test.
 
 ## Improvements
