@@ -58,46 +58,6 @@ public class PAudioDataSystem : MonoBehaviour
 
                 ProceduralAudio.layers[layer].currentTick = 0;
             }
-
-            //for (int layer = 0; layer < cycle.layers.Count; layer++)
-            //{
-            //    switch (parameter)
-            //    {
-            //        case AdaptableParameter.rythmAndMelody:
-            //            ProceduralAudio.print("new rythm and melody for layer: " + layer.ToString());
-
-            //            ProceduralAudio.layers[cycle.layers[layer]].rythm = PRythm.GenerateRythm(ProceduralAudio.layers[cycle.layers[layer]].beatsPerMeasure, ProceduralAudio.layers[cycle.layers[layer]].beatLength, ProceduralAudio.layers[cycle.layers[layer]].noteDensity);
-            //            ProceduralAudio.layers[cycle.layers[layer]].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[cycle.layers[layer]].rythm, ProceduralAudio.layers[cycle.layers[layer]].soundOptionsAmount, ProceduralAudio.layers[cycle.layers[layer]].layerType);
-
-            //            break;
-            //        case AdaptableParameter.melody:
-            //            ProceduralAudio.layers[cycle.layers[layer]].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[cycle.layers[layer]].rythm, ProceduralAudio.layers[cycle.layers[layer]].soundOptionsAmount, ProceduralAudio.layers[cycle.layers[layer]].layerType);
-
-            //            break;
-            //        case AdaptableParameter.beatsPerMeasure:
-            //            // TODO
-
-            //            break;
-            //        case AdaptableParameter.beatLength:
-            //            // TODO
-
-            //            break;
-            //        case AdaptableParameter.noteDensity:
-            //            // TODO
-
-            //            break;
-            //        case AdaptableParameter.onOff:
-            //            ProceduralAudio.layers[cycle.layers[layer]].layerOn = !ProceduralAudio.layers[cycle.layers[layer]].layerOn;
-
-            //            break;
-            //        default:
-            //            print("param fell through");
-
-            //            break;
-            //    }
-
-            //    ProceduralAudio.layers[cycle.layers[layer]].currentTick = 0;
-            //}
         }
     }
 
