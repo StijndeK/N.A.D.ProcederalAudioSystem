@@ -15,7 +15,7 @@ Procedural Audio System (working title) is the third experiment for my thesis ab
 - [N.A.D Visual Parameter Adaption in Unity](https://github.com/StijndeK/N.A.D.VisualParameterAdaption)
 
 ## Unity and C#
-To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. A dynamic approach allows for easy adding and changing of functionalities, which keeps new possibilities open.
+To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. A dynamic approach allows for easy adding and changing of functionalities, which keeps new possibilities open. This is especially important, because game projects often differ greatly from each other and the industry is undergoing constant change. To have a tool that allows for easier testing and implementing procedural music, it needs to be able to adapt to different projects and general changes in the industry.
 
 ## Systems Design
 Parameters received from the game are used to trigger and generate data cycles, which set audio parameters for layers, that are triggered in the sequencer. 
