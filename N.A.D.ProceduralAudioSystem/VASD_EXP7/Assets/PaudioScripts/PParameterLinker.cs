@@ -8,21 +8,21 @@ public class PParameterLinker : MonoBehaviour
     // and set what cycles they need to adapt
     // or test with controler input.
 
-    // !! This is the only class that needs to be adapted when implementing this system into a game.
-
     public static void Start()
     {
         // create cycles
         List<int> layers = new List<int>();
         for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++) layers.Add(layer);
 
-        PAudioDataSystem.cycles.Add(new PCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody }, layers, true));
+        PAudioDataSystem.cycles.Add(new PCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody}, layers, true));
 
         PAudioDataSystem.GenerateMacroAudioData();
         PAudioDataSystem.GenerateCycleAudioData(PAudioDataSystem.cycles[0]);
         PAudioDataSystem.AudioDataTerminalOutput();
 
         PAudioDataSystem.timedCycles.Add(new PTimedCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody}, new List<int> {1}, false, 0, 8)); // so here every 8 ticks the countermelody changes rythm and melody
+
+        PAudioDataSystem.dynamicCycles.Add(new PDynamicCycle(new List<int>(), layers, 7, 8));
 
         // link cycles to parameters here ..
     }
@@ -34,7 +34,7 @@ public class PParameterLinker : MonoBehaviour
 
     static void NewLinkedParameter(PCycle cycle, float input)
     {
-        // if input changed -> do something to cycle
+        // if input changed -> call cycle
     }
 
     static void ControlerInput()

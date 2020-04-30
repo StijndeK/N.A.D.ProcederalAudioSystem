@@ -20,8 +20,8 @@ public class ProceduralAudio : MonoBehaviour
     public static int amountOfLayers = 6;
     private int amountOfSoundEffects = 1;
 
-    private string folderLocationLoops = "../ProceduralBounceLocation/";
-    private string folderLocationOneShots = "../ProceduralBounceLocationOS/";
+    private string folderLocationLoops = "../../../GNADcopy/ProceduralBounceLocation/";
+    private string folderLocationOneShots = "../../../GNADcopy/ProceduralBounceLocationOS/";
 
     private int bpm = 100;
 

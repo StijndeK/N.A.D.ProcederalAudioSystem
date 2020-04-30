@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PAudioDataSystem : MonoBehaviour
@@ -10,6 +11,7 @@ public class PAudioDataSystem : MonoBehaviour
 
     public static List<PCycle> cycles = new List<PCycle>();
     public static List<PTimedCycle> timedCycles = new List<PTimedCycle>();
+    public static List<PDynamicCycle> dynamicCycles = new List<PDynamicCycle>();
 
     public enum AdaptableParameter { rythmAndMelody, melody, beatsPerMeasure, beatLength, noteDensity, onOff };
 
@@ -58,6 +60,43 @@ public class PAudioDataSystem : MonoBehaviour
 
                 ProceduralAudio.layers[layer].currentTick = 0;
             }
+        }
+    }
+
+    public static void GenerateDynamicCycleData(PDynamicCycle dynamicCycle)
+    {
+        // if first time running set all layers that are to be turned on off if they arent already
+        if (dynamicCycle.first)
+        {
+            foreach (int layer in dynamicCycle.dynamicLayers)
+            {
+                ProceduralAudio.layers[layer].layerOn = false;
+                print(layer.ToString() + " turned off");
+            }
+
+            dynamicCycle.first = false;
+        }
+        // check the different variables
+        var differences = dynamicCycle.dynamicLayers.Except(dynamicCycle.dynamicLayersCurrent).ToList();
+
+        // check if still layers to turn on
+        if (differences.Count() != 0)
+        {
+            // select a layer to turn on randomly
+            var layer = differences[Random.Range(0, differences.Count())];
+
+            print(layer.ToString() + " turned on");
+
+            // turn layer on
+            ProceduralAudio.layers[layer].layerOn = true;
+
+            // add layer to list with layers that have been turned on
+            dynamicCycle.dynamicLayersCurrent.Append(layer);
+        }
+        else
+        {
+            // delete cycle when its been completed
+            dynamicCycles.Remove(dynamicCycle);
         }
     }
 

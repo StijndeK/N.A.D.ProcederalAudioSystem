@@ -127,3 +127,4 @@ dmypy.json
 *.wav
 
 VASD_EXP7_Real
+*.meta

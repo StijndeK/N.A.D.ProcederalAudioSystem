@@ -154,11 +154,11 @@ public class PTonal
             }
             else
             {
-                // TODO: add nlull instead of -1 to represent empty value (int?)
+                // TODO: add null instead of -1 to represent empty value (int?)
                 output.Add(-1);
             }
 
-            // TODO: make dynamic check values for other rythms
+            // TODO: dynamic check values for other rythms
             // move to next chord whether note needs to play or not to sync with other chord lines
             if (tick % 4 == 3)
             {
