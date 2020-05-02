@@ -61,6 +61,8 @@ public class PAudioDataSystem : MonoBehaviour
                 ProceduralAudio.layers[layer].currentTick = 0;
             }
         }
+
+        //AudioDataTerminalOutput();
     }
 
     public static void GenerateDynamicCycleData(PDynamicCycle dynamicCycle)
@@ -91,12 +93,13 @@ public class PAudioDataSystem : MonoBehaviour
             ProceduralAudio.layers[layer].layerOn = true;
 
             // add layer to list with layers that have been turned on
-            dynamicCycle.dynamicLayersCurrent.Append(layer);
+            dynamicCycle.dynamicLayersCurrent.Add(layer);
         }
         else
         {
             // delete cycle when its been completed
             dynamicCycles.Remove(dynamicCycle);
+            print(dynamicCycles.Count());
         }
     }
 

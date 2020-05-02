@@ -12,8 +12,8 @@ public class PSequencer
         {
             ProceduralAudio.print("tick");
 
-            // TODO: remove duplicate code
             // call timed cycles
+            // TODO: remove duplicates by creating list or a timedObjects class
             foreach (PTimedCycle cycle in PAudioDataSystem.timedCycles)
             {
                 // check trigger timed cycle
@@ -26,7 +26,7 @@ public class PSequencer
             }
 
             // call dynamic cycles
-            foreach (PDynamicCycle cycle in PAudioDataSystem.dynamicCycles)
+            foreach (PDynamicCycle cycle in PAudioDataSystem.dynamicCycles.ToArray())
             {
                 // check trigger timed cycle
                 if (cycle.currentTick % cycle.lengthInTicks == cycle.lengthInTicks - 1)
@@ -53,7 +53,7 @@ public class PSequencer
                     if (currentLayer.rythm[currentLayer.currentTick] == 1)
                     {
                         // TODO: set scale for all layers here instead of only the melody
-                        // check if audio needs to adapt to another layer and play audio
+                        // check if audio needs to adapt to another layer and play audio TODO: set a layer parameter to see if it needs to adapt instead of just checking if its the melody
                         if (currentLayer.layerType == ProceduralAudio.LayerType.melody)
                         {
                             // account for scale having switches

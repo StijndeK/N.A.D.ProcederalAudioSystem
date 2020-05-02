@@ -12,6 +12,7 @@ public class PDynamicCycle
     public bool first = true;
 
     // TODO: add a specific order or influence the order based on game data
+    // TODO: dont only allow layers to just be a buildup, but a dynamic course as well
 
     public PDynamicCycle(List<int> dynamicLayersCurrent, List<int> dynamicLayers, int currentTick, int lengthInTicks, bool first = true)
     {
@@ -22,5 +23,3 @@ public class PDynamicCycle
         this.first = first;
     }
 }
-
-

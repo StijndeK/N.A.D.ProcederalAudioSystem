@@ -23,8 +23,6 @@ public class ProceduralAudio : MonoBehaviour
     private string folderLocationLoops = "../../../GNADcopy/ProceduralBounceLocation/";
     private string folderLocationOneShots = "../../../GNADcopy/ProceduralBounceLocationOS/";
 
-    private int bpm = 100;
-
     public static int chordAmount = 4;
     public static int chordLayerAmount = 3;
 
@@ -40,7 +38,7 @@ public class ProceduralAudio : MonoBehaviour
         // read oneshots
         entryListOS = PAutoFileLoader.ReadFiles(folderLocationOneShots, amountOfSoundEffects, true);
 
-        PClock.Init(bpm);
+        PClock.Init(100);
 
         PParameterLinker.Start();
     }

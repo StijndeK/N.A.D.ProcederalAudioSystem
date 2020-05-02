@@ -8,19 +8,30 @@ public class PClock
     public static float currentBPM;
     public static bool nextTick;
 
-    public static void Init(int bpm)
+    public static void Init(float bpm)
     {
         currentBPM = calculateTime(bpm, 1);
+        setNewTickTime();
+
+    }
+
+    public static void SetNewTime(float bpm)
+    {
+        currentBPM = bpm;
+        setNewTickTime();
+    }
+
+    private static void setNewTickTime()
+    {
         loopTime = Time.time + currentBPM;
-        nextTick = Time.time < loopTime;
+        nextTick = false;
     }
 
     public static void Update()
     {
         if (nextTick)
         {
-            loopTime = Time.time + currentBPM;
-            nextTick = false;
+            setNewTickTime();
         }
 
         nextTick |= Time.time > loopTime;
