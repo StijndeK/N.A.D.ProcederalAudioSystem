@@ -9,77 +9,123 @@ public class PAudioDataSystem : MonoBehaviour
     public static List<int> currentScale = new List<int>();
     public static List<int> previousScale = new List<int>();
 
-    public static List<PCycle> cycles = new List<PCycle>();
-    public static List<PTimedCycle> timedCycles = new List<PTimedCycle>();
-    public static List<PDynamicCycle> dynamicCycles = new List<PDynamicCycle>();
 
     public enum AdaptableParameter { rythmAndMelody, melody, beatsPerMeasure, beatLength, noteDensity, onOff };
 
-    public static void GenerateCycleAudioData(PCycle cycle)
+    public static void CallCycle(PCycle cycle)
     {
-        if (cycle.changeChordsAndScale) GenerateMacroAudioData();
-
-        foreach (AdaptableParameter parameter in cycle.parameters)
+        foreach (PParameter parameter in cycle.parametersToAdapt)
         {
-            foreach (int layer in cycle.layers)
+            switch (parameter.dataToAdapt)
             {
-                switch (parameter)
-                {
-                    case AdaptableParameter.rythmAndMelody:
-                        ProceduralAudio.print("new rythm and melody for layer: " + layer.ToString());
+                case PParameterLinker.AdaptableParametersCycle.chordsAndScale:
+                    previousScale = currentScale;
 
+                    // set scale (maj/min)
+                    currentScale = PTonal.setScale(Random.Range(0, 2));
+
+                    // generate chords
+                    chords = PTonal.GenerateChords();
+                    break;
+
+                case PParameterLinker.AdaptableParametersCycle.layerdata:
+                    foreach (int layer in parameter.layersToAdapt)
+                    {
+                        // TODO: dynamically set which variables should adapt instead of adapting all
+                        // TODO: use game data to have more influence on how they adapt instead of just choosing between 2 options
+                        ProceduralAudio.layers[layer].beatsPerMeasure = (parameter.value > 0.5f) ? 8 : 6;
+                        ProceduralAudio.layers[layer].beatLength = (parameter.value > 0.5f) ? 1 : 2;
+                        ProceduralAudio.layers[layer].noteDensity = (parameter.value > 0.5f) ? 8 : 4;
+                    }
+                    break;
+
+                case PParameterLinker.AdaptableParametersCycle.rythmAndMelody:
+                    // with a new rythm a new melody has to be created because the melody is created on top of a rythm
+                    foreach (int layer in parameter.layersToAdapt)
+                    {
                         ProceduralAudio.layers[layer].rythm = PRythm.GenerateRythm(ProceduralAudio.layers[layer]);
                         ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer]);
+                        ProceduralAudio.layers[layer].currentTick = 0;
+                    }
+                    break;
 
-                        break;
-                    case AdaptableParameter.melody:
+                case PParameterLinker.AdaptableParametersCycle.melody:
+                    foreach (int layer in parameter.layersToAdapt)
+                    {
                         ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer]);
+                    }
+                    break;
 
-                        break;
-                    case AdaptableParameter.beatsPerMeasure:
-                        // TODO
+                case PParameterLinker.AdaptableParametersCycle.bpm:
+                    float range = 0.2f;
+                    float bpm = (float)(PClock.currentBPM * ((parameter.value * range) + (1.0f - (range / 2))));
+                    PClock.SetNewTime(bpm);
+                    break;
 
-                        break;
-                    case AdaptableParameter.beatLength:
-                        // TODO
-
-                        break;
-                    case AdaptableParameter.noteDensity:
-                        // TODO
-
-                        break;
-                    case AdaptableParameter.onOff:
+                case PParameterLinker.AdaptableParametersCycle.onOff:
+                    foreach (int layer in parameter.layersToAdapt)
+                    {
                         ProceduralAudio.layers[layer].layerOn = !ProceduralAudio.layers[layer].layerOn;
+                    }
+                    break;
+                case PParameterLinker.AdaptableParametersCycle.dynamicCycleLayerAmount:
+                    // set what layers to adapt
+                    var changingDynamicLayers = new List<int>();
+                    float probability = 0.75f; // percentage minimum
 
-                        break;
-                    default:
-                        break;
-                }
+                    //for (float amount )
+                    for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++)
+                    {
+                        if (Random.Range(probability, 1.0f) > parameter.value)
+                        {
+                            changingDynamicLayers.Add(layer);
+                        }
+                    }
 
-                ProceduralAudio.layers[layer].currentTick = 0;
+                    // change dynamic cycle
+                    PParameterLinker.dynamicCycle = new PDynamicCycle(changingDynamicLayers, true); // TODO: for now only 1 dynamic cycle is used
+                    for (int i = 0; i < PParameterLinker.cycleTimers.Count; i++)
+                    {
+                        //PCycleTimer cycleTimer = ;
+                        if (PParameterLinker.cycleTimers[i].dynamicCycle != null)
+                        {
+                            PParameterLinker.cycleTimers[i] = new PCycleTimer(null, PParameterLinker.dynamicCycle);
+                        }
+                    }
+                    break;
             }
         }
 
-        //AudioDataTerminalOutput();
+        if (cycle.terminalOutput)
+            AudioDataTerminalOutput();
     }
 
-    public static void GenerateDynamicCycleData(PDynamicCycle dynamicCycle)
+    public static void callDynamicCycle(PDynamicCycle dynamicCycle)
     {
         // if first time running set all layers that are to be turned on, off if they arent already
         if (dynamicCycle.first)
         {
-            print("dynamic cycle added");
-
-            foreach (int layer in dynamicCycle.dynamicLayers)
+            for (int layer = 0; layer < ProceduralAudio.layers.Count; layer++)
             {
-                ProceduralAudio.layers[layer].layerOn = false;
-                print(layer.ToString() + " turned off");
+                bool isInList = dynamicCycle.dynamicLayersToAdapt.IndexOf(layer) != -1;
+                if (isInList)
+                {
+                    ProceduralAudio.layers[layer].layerOn = false;
+                    print(layer.ToString() + " turned off");
+                }
+                else
+                {
+                    ProceduralAudio.layers[layer].layerOn = true;
+                    print(layer.ToString() + " turned on");
+                }
             }
 
             dynamicCycle.first = false;
         }
+
+
         // check how many layers still need to turned on
-        var differences = dynamicCycle.dynamicLayers.Except(dynamicCycle.dynamicLayersCurrent).ToList();
+        var differences = dynamicCycle.dynamicLayersToAdapt.Except(dynamicCycle.dynamicLayersCurrent).ToList();
 
         // check if still layers to turn on
         if (differences.Count() != 0)
@@ -95,23 +141,9 @@ public class PAudioDataSystem : MonoBehaviour
             // add layer to list with layers that have been turned on
             dynamicCycle.dynamicLayersCurrent.Add(layer);
         }
-        else
-        {
-            // delete cycle when its been completed
-            dynamicCycles.Remove(dynamicCycle);
-            print("dynamic cycle removed");
-        }
-    }
 
-    public static void GenerateMacroAudioData()
-    {
-        previousScale = currentScale;
-
-        // set scale (maj/min)
-        currentScale = PTonal.setScale(Random.Range(0, 2));
-
-        // generate chords
-        chords = PTonal.GenerateChords();
+        if (dynamicCycle.terminalOutput)
+            print("dynamic cycle called");
     }
 
     public static void AudioDataTerminalOutput()
@@ -129,8 +161,8 @@ public class PAudioDataSystem : MonoBehaviour
                 melodyOutput += ProceduralAudio.layers[layer].melody[i].ToString();
             }
 
-            ProceduralAudio.print(rythmOutput);
-            ProceduralAudio.print(melodyOutput);
+            print(rythmOutput);
+            print(melodyOutput);
         }
 
         for (int chord = 0; chord < chords.Count; chord++) print("chord: " + chords[chord][0]);

@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class PParameter
 {
-    // the value of the parameters should be updated at their origin when it changes, so that unnecesarry listeners dont have to be created here
+    public PParameterLinker.AdaptableParametersCycle dataToAdapt;
 
-    public PParameterLinker.AdaptableData dataToAdapt;
-    public float value;
+    // because not every parameter has an ability to adapt to gamedata yet, only set this when there is gamedata to adapt to
+    // TODO: make it possible for a parameter to adapt to multiple values
+    public float? value;
 
-    public PParameter(PParameterLinker.AdaptableData dataToAdapt, float value)
+    // because not every parameter has specific layers (such as bpm), only set this if specific layers or all layers need to adapt
+    public List<int> layersToAdapt;
+
+    public PParameter(PParameterLinker.AdaptableParametersCycle dataToAdapt, float? value = null, List<int> layersToAdapt = null)
     {
         this.dataToAdapt = dataToAdapt;
         this.value = value;
+        this.layersToAdapt = layersToAdapt;
     }
 }

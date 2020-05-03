@@ -12,30 +12,22 @@ public class PSequencer
         {
             ProceduralAudio.print("tick");
 
-            // call timed cycles
-            // TODO: remove duplicates by creating list or a timedObjects class
-            foreach (PTimedCycle cycle in PAudioDataSystem.timedCycles)
+            foreach (PCycleTimer cycleTimer in PParameterLinker.cycleTimers)
             {
                 // check trigger timed cycle
-                if (cycle.currentTick % cycle.lengthInTicks == cycle.lengthInTicks - 1)
+                if (cycleTimer.currentTick % cycleTimer.lengthInTicks == cycleTimer.lengthInTicks - 1)
                 {
-                    PAudioDataSystem.GenerateCycleAudioData(cycle);
+                    if (cycleTimer.cycle != null)
+                    {
+                        PAudioDataSystem.CallCycle(cycleTimer.cycle);
+                    }
+                    else
+                    {
+                        PAudioDataSystem.callDynamicCycle(cycleTimer.dynamicCycle);
+                    }
                 }
 
-                cycle.currentTick += 1;
-            }
-
-            // call dynamic cycles
-            foreach (PDynamicCycle cycle in PAudioDataSystem.dynamicCycles.ToArray())
-            {
-                // check trigger timed cycle
-                if (cycle.currentTick % cycle.lengthInTicks == cycle.lengthInTicks - 1)
-                {
-                    //hier de dynamic functie ipv de generatecycledata functie
-                    PAudioDataSystem.GenerateDynamicCycleData(cycle);
-                }
-
-                cycle.currentTick += 1;
+                cycleTimer.currentTick += 1;
             }
 
             // for every layer

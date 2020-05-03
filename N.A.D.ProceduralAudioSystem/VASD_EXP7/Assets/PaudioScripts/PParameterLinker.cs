@@ -4,40 +4,38 @@ using UnityEngine;
 
 public class PParameterLinker : MonoBehaviour
 {
-    static List<int> changingLayers = new List<int>();
-    static List<int> changingDynamicLayers = new List<int>();
+    public static List<PCycle> testCycles = new List<PCycle>();
+    public static List<PCycleTimer> cycleTimers = new List<PCycleTimer>();
+    public static PDynamicCycle dynamicCycle;
+    public static List<PAdaptionMoment> adaptionMoments = new List<PAdaptionMoment>();
 
-    static List<PParameter> parameters = new List<PParameter>();
-    static List<PAdaptionMoment> adaptionMoments = new List<PAdaptionMoment>();
-
-    public enum AdaptableData { bpm, layerdata, dynamicCycleLayers };
-
-    public static List<PCycle> currentCycles;
-    public static List<PDynamicCycle> currentDynamicCycles;
+    public enum AdaptableParametersCycle { chordsAndScale, layerdata, rythmAndMelody, melody, bpm, onOff, dynamicCycleLayerAmount };
 
     public static void Start()
     {
-        // init create and set cycles
-        for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++) changingLayers.Add(layer);
-        changingDynamicLayers = changingLayers;
+        // create cycles and parameters
+        testCycles.Add(new PCycle(new List<PParameter>()));
 
-        PAudioDataSystem.cycles.Add(new PCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody}, changingLayers, true));
+        testCycles[0].parametersToAdapt.Add(new PParameter(AdaptableParametersCycle.chordsAndScale));
+        testCycles[0].parametersToAdapt.Add(new PParameter(AdaptableParametersCycle.layerdata, MockGameData(), new List<int> {1})); 
+        testCycles[0].parametersToAdapt.Add(new PParameter(AdaptableParametersCycle.rythmAndMelody, null, new List<int> { 0, 1, 2, 3, 4, 5 })); 
+        testCycles[0].parametersToAdapt.Add(new PParameter(AdaptableParametersCycle.bpm, MockGameData())); 
+        testCycles[0].parametersToAdapt.Add(new PParameter(AdaptableParametersCycle.dynamicCycleLayerAmount, MockGameData()));
 
-        PAudioDataSystem.GenerateMacroAudioData();
-        PAudioDataSystem.GenerateCycleAudioData(PAudioDataSystem.cycles[0]);
-        PAudioDataSystem.AudioDataTerminalOutput();
+        testCycles.Add(new PCycle(new List<PParameter> { new PParameter(AdaptableParametersCycle.rythmAndMelody, null, new List<int> { 1 })}));
 
-        PAudioDataSystem.timedCycles.Add(new PTimedCycle(new List<PAudioDataSystem.AdaptableParameter> { PAudioDataSystem.AdaptableParameter.rythmAndMelody }, new List<int> { 1 }, false, 0, 8)); // so here every 8 ticks the countermelody changes rythm and melody
+        // init dynamic cycle
+        dynamicCycle = new PDynamicCycle(new List<int> { 0, 1, 2, 3, 4, 5 }, true);
 
-        PAudioDataSystem.dynamicCycles.Add(new PDynamicCycle(new List<int>(), changingDynamicLayers, 7, 8));
+        // set a timer on the second cycle and the dynamic cycle
+        cycleTimers.Add(new PCycleTimer(testCycles[1], null));
+        cycleTimers.Add(new PCycleTimer(null, dynamicCycle));
 
-        // create parameters
-        parameters.Add(new PParameter(AdaptableData.bpm, Random.Range(0.0f, 1.0f)));
-        parameters.Add(new PParameter(AdaptableData.layerdata, Random.Range(0.0f, 1.0f)));
-        parameters.Add(new PParameter(AdaptableData.dynamicCycleLayers, Random.Range(0.0f, 1.0f)));
+        // create adaptionmoments
+        adaptionMoments.Add(new PAdaptionMoment(testCycles));
 
-        // create adaption moments
-        adaptionMoments.Add(new PAdaptionMoment(true, PAudioDataSystem.cycles, true, PAudioDataSystem.dynamicCycles));
+        // call dataa
+        PAudioDataSystem.CallCycle(testCycles[0]);
     }
 
     public static void Update()
@@ -46,99 +44,9 @@ public class PParameterLinker : MonoBehaviour
     }
 
     // function to test parameter linking, when no game is active to receive data from
-    static void MockGameData(PParameter parameter)
+    static float MockGameData()
     {
-        parameter.value = Random.Range(0.0f, 1.0f);
-    }
-
-    static void CallAllParameters(List<PCycle> cycles, List<PDynamicCycle> dynamicCycles)
-    {
-        currentCycles = cycles;
-        currentDynamicCycles = dynamicCycles;
-
-        foreach (PParameter currentParam in parameters)
-        {
-            // get game data
-            MockGameData(currentParam);
-
-            // adapt audio data to game data
-            CallParameter(currentParam);
-        }
-    }
-
-    static void CallParameter(PParameter parameter)
-    {
-        switch (parameter.dataToAdapt)
-        {
-            case (AdaptableData.bpm):
-                // set bpm and pas it through
-                PClock.SetNewTime(SetNewBPM(0.2f, parameter.value));
-
-                break;
-
-            case (AdaptableData.layerdata):
-                foreach (PCycle cycle in currentCycles)
-                {
-                    // set data
-                    SetNewLayerData(cycle.layers[0], parameter.value); // TODO: using first layer in list for now
-
-                    // create new cycle with data
-                    PAudioDataSystem.GenerateCycleAudioData(cycle);
-                }
-
-                break;
-
-            case (AdaptableData.dynamicCycleLayers): // amount of layers to change by a dynamic cycle. TODO: This should be split in groups to prevent 2 dynamiccycles from changing the same layer
-                for (int currentCycle = 0; currentCycle < currentDynamicCycles.Count; currentCycle++)
-                {
-                    // set data
-                    SetNewDYnamicCycleLayers(parameter.value);
-
-                    // create new cycle with data
-                    if (currentCycle < currentDynamicCycles.Count)
-                    {
-                        PAudioDataSystem.dynamicCycles[currentCycle] = new PDynamicCycle(new List<int>(), changingDynamicLayers, 7, 8);
-                    }
-                    else
-                    {
-                        PAudioDataSystem.dynamicCycles.Add(new PDynamicCycle(new List<int>(), changingDynamicLayers, 7, 8));
-                    }
-                }
-
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    static float SetNewBPM(float range, float input)
-    {
-        float bpm = PClock.currentBPM * ((input * range) + (1.0f - (range / 2)));
-        print("bpm: " + bpm.ToString());
-        return bpm;
-    }
-     
-    static void SetNewLayerData(int layer, float input)
-    {
-        // TODO: dynamically set which variables should adapt instead of adapting all
-        // TODO: use game data to have more influence on how they adapt instead of just choosing between 2 options
-        ProceduralAudio.layers[layer].beatsPerMeasure = (input > 0.5f) ? 8 : 6;
-        ProceduralAudio.layers[layer].beatLength = (input > 0.5f) ? 1 : 2;
-        ProceduralAudio.layers[layer].noteDensity = (input > 0.5f) ? 8 : 4;
-    }
-
-    static void SetNewDYnamicCycleLayers(float input)
-    {
-        changingDynamicLayers = new List<int>();
-
-        for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++)
-        {
-            if (input > 0.25f)
-            {
-                changingDynamicLayers.Add(layer);
-            }
-        }
+        return Random.Range(0.0f, 1.0f);
     }
 
     static void ControlerInput()
@@ -146,9 +54,19 @@ public class PParameterLinker : MonoBehaviour
         // generate new data
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            // set new gamedata
+            // TODO: automate this
+            testCycles[0].parametersToAdapt[1].value = MockGameData();
+            testCycles[0].parametersToAdapt[3].value = MockGameData();
+            testCycles[0].parametersToAdapt[4].value = MockGameData();
+
+            // call cycles
             foreach (PAdaptionMoment adaptMoment in adaptionMoments)
             {
-                CallAllParameters(adaptMoment.cycle, adaptMoment.dynamicCycles);
+                foreach(PCycle cycle in adaptMoment.cycles)
+                {
+                    PAudioDataSystem.CallCycle(cycle);
+                }
             }
         }
 

@@ -4,16 +4,10 @@ using UnityEngine;
 
 public class PAdaptionMoment
 {
-    public bool macro;
-    public List<PCycle> cycle;
-    public bool terminalOutput;
-    public List<PDynamicCycle> dynamicCycles;
+    public List<PCycle> cycles;
 
-    public PAdaptionMoment(bool macro, List<PCycle> cycle, bool terminalOutput, List<PDynamicCycle> dynamicCycles)
+    public PAdaptionMoment(List<PCycle> cycles)
     {
-        this.macro = macro;
-        this.cycle = cycle;
-        this.terminalOutput = terminalOutput;
-        this.dynamicCycles = dynamicCycles;
+        this.cycles = cycles;
     }
 }
