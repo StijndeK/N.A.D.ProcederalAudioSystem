@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PTonal
 {
+    // TODO: add null instead of -1 to represent empty value (int?)
+
     public static List<int> chordsRythm = new List<int>();
 
     public static List<int> setScale(int majMin)
@@ -45,34 +47,34 @@ public class PTonal
         return chords; // chord, notes (1, 3, 5)
     }
 
-    public static List<int> GenerateTonalIntervals(List<int> rythm, int frequencyRange, ProceduralAudio.LayerType layerType)
+    public static List<int> GenerateTonalIntervals(PLoopLayer layer)
     {
         var output = new List<int>();
 
         for (int type = 0; type < ProceduralAudio.amountOfLayers + 1; type++)
         {
-            if (type == (int)layerType)
+            if (type == (int)layer.layerType)
             {
-                switch ((int)layerType)
+                switch ((int)layer.layerType)
                 {
                     case 0: // melody
-                        output = GenerateChordBasedMelody(rythm, new List<int> { 0, 2, 4 });
+                        output = GenerateChordBasedMelody(layer.rythm, new List<int> { 0, 2, 4 });
 
                         break;
                     case 1: // countermelody
-                        output = GenerateMelody(rythm, frequencyRange);
+                        output = GenerateMelody(layer.rythm, layer.soundOptionsAmount);
 
                         break;
                     case 2: // percussion
-                        output = GenerateMelody(rythm, frequencyRange);
+                        output = GenerateMelody(layer.rythm, layer.soundOptionsAmount);
 
                         break;
                     case 3: // soundscape
-                        output = GenerateMelody(rythm, frequencyRange);
+                        output = GenerateMelody(layer.rythm, layer.soundOptionsAmount);
 
                         break;
                     default: // chords
-                        output = LinkChordLine(rythm, (int)layerType - 4); // subtract 4 for other vars in enum
+                        output = LinkChordLine(layer.rythm, (int)layer.layerType - 4); // subtract 4 for other vars in enum
 
                         break;
                 }
@@ -100,7 +102,6 @@ public class PTonal
 
             else
             {
-                // TODO: add null instead of -1 to represent empty value (int?)
                 layerMelody.Add(-1);
             }
         }
@@ -124,7 +125,6 @@ public class PTonal
 
             else
             {
-                // TODO: add null instead of -1 to represent empty value (int?)
                 layerMelody.Add(-1);
             }
         }
@@ -154,7 +154,6 @@ public class PTonal
             }
             else
             {
-                // TODO: add null instead of -1 to represent empty value (int?)
                 output.Add(-1);
             }
 

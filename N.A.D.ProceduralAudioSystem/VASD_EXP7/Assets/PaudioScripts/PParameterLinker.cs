@@ -17,7 +17,7 @@ public class PParameterLinker : MonoBehaviour
 
     public static void Start()
     {
-        // create and set cycles
+        // init create and set cycles
         for (int layer = 0; layer < ProceduralAudio.amountOfLayers; layer++) changingLayers.Add(layer);
         changingDynamicLayers = changingLayers;
 
@@ -118,7 +118,7 @@ public class PParameterLinker : MonoBehaviour
         print("bpm: " + bpm.ToString());
         return bpm;
     }
-
+     
     static void SetNewLayerData(int layer, float input)
     {
         // TODO: dynamically set which variables should adapt instead of adapting all

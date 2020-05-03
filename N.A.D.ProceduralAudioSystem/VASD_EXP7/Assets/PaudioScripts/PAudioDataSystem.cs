@@ -28,12 +28,12 @@ public class PAudioDataSystem : MonoBehaviour
                     case AdaptableParameter.rythmAndMelody:
                         ProceduralAudio.print("new rythm and melody for layer: " + layer.ToString());
 
-                        ProceduralAudio.layers[layer].rythm = PRythm.GenerateRythm(ProceduralAudio.layers[layer].beatsPerMeasure, ProceduralAudio.layers[layer].beatLength, ProceduralAudio.layers[layer].noteDensity);
-                        ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer].rythm, ProceduralAudio.layers[layer].soundOptionsAmount, ProceduralAudio.layers[layer].layerType);
+                        ProceduralAudio.layers[layer].rythm = PRythm.GenerateRythm(ProceduralAudio.layers[layer]);
+                        ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer]);
 
                         break;
                     case AdaptableParameter.melody:
-                        ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer].rythm, ProceduralAudio.layers[layer].soundOptionsAmount, ProceduralAudio.layers[layer].layerType);
+                        ProceduralAudio.layers[layer].melody = PTonal.GenerateTonalIntervals(ProceduralAudio.layers[layer]);
 
                         break;
                     case AdaptableParameter.beatsPerMeasure:
@@ -53,8 +53,6 @@ public class PAudioDataSystem : MonoBehaviour
 
                         break;
                     default:
-                        print("param fell through");
-
                         break;
                 }
 
@@ -67,9 +65,11 @@ public class PAudioDataSystem : MonoBehaviour
 
     public static void GenerateDynamicCycleData(PDynamicCycle dynamicCycle)
     {
-        // if first time running set all layers that are to be turned on off if they arent already
+        // if first time running set all layers that are to be turned on, off if they arent already
         if (dynamicCycle.first)
         {
+            print("dynamic cycle added");
+
             foreach (int layer in dynamicCycle.dynamicLayers)
             {
                 ProceduralAudio.layers[layer].layerOn = false;
@@ -78,7 +78,7 @@ public class PAudioDataSystem : MonoBehaviour
 
             dynamicCycle.first = false;
         }
-        // check the different variables
+        // check how many layers still need to turned on
         var differences = dynamicCycle.dynamicLayers.Except(dynamicCycle.dynamicLayersCurrent).ToList();
 
         // check if still layers to turn on
@@ -99,7 +99,7 @@ public class PAudioDataSystem : MonoBehaviour
         {
             // delete cycle when its been completed
             dynamicCycles.Remove(dynamicCycle);
-            print(dynamicCycles.Count());
+            print("dynamic cycle removed");
         }
     }
 
