@@ -5,7 +5,6 @@ PAS is made as a general framework/tool, but is also used for and tested on 'Pro
 Currently being developed by [Josien Vos](http://josienvos.nl/).
  [This video](https://streamable.com/y8uoq6) shows the current system applied to Procedural Imagination
 ![08 concept art 1](https://user-images.githubusercontent.com/31696336/80291854-857ec580-8751-11ea-884a-7a34bae40979.png)
-![08 concept art 2b](https://user-images.githubusercontent.com/31696336/80292132-1a82be00-8754-11ea-904e-b270132c07cd.png)
 
 An (adapted) functionality caried over from [N.A.D Automatic File Loading in Python](https://github.com/StijndeK/N.A.D.AutomaticSoundloader) automatically loads files from specific folders and obtains certain parameters based on the file's names. This reduces the amount of time and disturbance of the workflow caused by having to implement the audio before being able to test it.
 
