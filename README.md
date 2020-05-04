@@ -25,22 +25,16 @@ External gamedata is used to trigger and generate datacycles that change audioda
 
 A modular approach makes it possible to easily add and/or edit functionalities, which keeps future possibilities open and helps to not condition the user into using certain systems. Because this tool is meant as a framework and is not specific to one game, it needs to be able to adapt to different projects and general changes in the industry/technology. For example, an infinit amount of cycles can be created to change any parameter for any layer based on any value. 
 
+![PI_Concept-DataflowComplete (1)](https://user-images.githubusercontent.com/31696336/80933589-b354b180-8dc4-11ea-9f22-79c06825a77c.png)
+
 ### Layers
 The loaded audio is divided into vertical layers, to be played independently or over each other. A layer can be a vertical looping layer or sound effect. A layer holds data on how, when and what variation to play. 
-![PI_Concept-DataflowLayers](https://user-images.githubusercontent.com/31696336/80933592-b51e7500-8dc4-11ea-861b-302dd21ccde9.png)
 
 ### Generating notes
 Layers contain musical values, among which a *rythm* and a *tonal layer*. These rythms and melodys are used in the sequencer to check what and when to play. The rythm calls on what ticks audio needs to be played. The tonal layer decides what notes need to be played based on the `Layertype` (melody, countermelody, chord, percussion, etc) and the available samples within the layer. The notes are generated at initialisation and when a `Cycle` calls on them.
-![PI_Concept-DataflowMusicValues](https://user-images.githubusercontent.com/31696336/80933593-b5b70b80-8dc4-11ea-8d43-e501db04a7ff.png)
-
 
 ### Cycles
  A `Cycle` holds audiovalues to adapt, values to adapt to and what layers to adapt. The only way to adapt audio data is by using a cycle. Cycles can be triggered with game events using a `AdaptionMoment` or from the sequencer, using a `CycleTimer`. A `DynamicCycle` only sets the on/off value of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random, in the future specific dynamic structures could be given and/or influenced by external parameters.
-![PI_Concept-DataflowCycles](https://user-images.githubusercontent.com/31696336/80933590-b51e7500-8dc4-11ea-8ff2-b0aca49807c4.png)
-
-
-### General Dataflow
-![PI_Concept-DataflowComplete (1)](https://user-images.githubusercontent.com/31696336/80933589-b354b180-8dc4-11ea-9f22-79c06825a77c.png)
 
 ## Current status & improvements
 The main goal for this experiment is to research how to improve the audio designing process and encouraging experimentation by removing the obstructions in the workflow. 
