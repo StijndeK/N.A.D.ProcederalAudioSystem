@@ -1,11 +1,13 @@
 # N.A.D. Procedural Audio System
-PAS (working title) is a framework/tool designed to improve procedural (game)music systems prototyping and implementing. Even though procedural sound design has become standard in gameaudio, procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
+PAS is a framework/tool designed to improve procedural music systems prototyping and implementing. Even though procedural sound design has become somewhat standard in gameaudio, I find procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
 
-PAS is a general framework/tool for procedural nonlinear audio, but is also simultaneously being used for and tested on 'Procedural Imagination'. A game that is currently being developed, which generates envirnonments whilst exploring.
+PAS is made as a general framework/tool, but is also used for and tested on 'Procedural Imagination'.A procedurally generated game world that dynamically responds to the player's actions.
+Currently being developed by [Josien Vos](http://josienvos.nl/).
+ [This video](https://streamable.com/y8uoq6) shows the current system applied to Procedural Imagination
 ![08 concept art 1](https://user-images.githubusercontent.com/31696336/80291854-857ec580-8751-11ea-884a-7a34bae40979.png)
 ![08 concept art 2b](https://user-images.githubusercontent.com/31696336/80292132-1a82be00-8754-11ea-904e-b270132c07cd.png)
 
-A (adapted) functionality caried over from [N.A.D Automatic File Loading in Python](https://github.com/StijndeK/N.A.D.AutomaticSoundloader) automatically loads files from specific folders and obtains certain parameters based on their names. This reduces the amount of time and disturbance of the workflow caused by having to implement the audio before being able to test it.
+An (adapted) functionality caried over from [N.A.D Automatic File Loading in Python](https://github.com/StijndeK/N.A.D.AutomaticSoundloader) automatically loads files from specific folders and obtains certain parameters based on the file's names. This reduces the amount of time and disturbance of the workflow caused by having to implement the audio before being able to test it.
 
 ## N.A.D.
 Procedural Audio System (working title) is the third experiment for my thesis about: Tools for Designing Nonlinear Audio for Games. As a game audio designer I am hindered during my creative process, due to the discrepancy between the nonlinearity of my work and the linear character of standard audio production software. Standard linear audio production tools offer little to none nonlinear sequencing, transitioning, parameter adaption and probability functionalities. Furthermore, linear sequencers are not optimised to provide a visual representation of nonlinear systems. Existing standard middleware solutions focus less on tackling the obstructions in the design stage of a project. These issues cause testing and prototyping to take unnecessary amounts of time and obscures communication with collaborators. This obstructs the workflow and discourages innovation. 
@@ -15,41 +17,45 @@ Procedural Audio System (working title) is the third experiment for my thesis ab
 - [N.A.D Visual Parameter Adaption in Unity](https://github.com/StijndeK/N.A.D.VisualParameterAdaption)
 
 ## Unity and C#
-To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. A dynamic approach allows for easy adding and changing of functionalities, which keeps new possibilities open. This is especially important, because game projects often differ greatly from each other and the industry is undergoing constant change. To have a tool that allows for easier testing and implementing procedural music, it needs to be able to adapt to different projects and general changes in the industry.
+To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. 
 
 ## Systems Design
-Parameters received from the game are used to trigger and generate data cycles, which set audio parameters for layers, that are triggered in the sequencer. 
+External gamedata is used to trigger and generate datacycles that change audiodata. These cycles set audio parameters for layers. Layers hold audiofiles and data on when and how to play. The `Sequencer` receives ticks from the `Clock` and checks the information of layers to trigger audiofiles. For a more intricate audiosystem the checking what to play and calling the sounds should be split to reduce the risk of delays.
 
-### Generating musical values
-Musical values for layers are divided into a 'rythm' and a 'tonal' layer. The rythm decides on which tick audio needs to be played. The tonal layer decides what notes need to be played based on the layertype (melody, countermelody, chord, percussion, etc) and the available samples within the layer. This data is then parsed to a cycle which will set layer data when triggered.
-![PI_Concept-Copy of Dataflow green](https://user-images.githubusercontent.com/31696336/80291982-a98ed680-8752-11ea-956d-5cdb794d3c7d.png)
+![PI_Diagram](https://user-images.githubusercontent.com/31696336/80965632-2d138c00-8e13-11ea-9b8a-95dc09f23286.png)
 
-### Cycles
- A cycle holds the parameters (rythm, On/Off toggle, etc) it needs to adapt and for what layers they need to adapt. Cycles are triggerd by external data, or by the sequencer (timed cycles). An important future functionality is to have cycles hold data on how the parameters need to adapt.
-![PI_Concept-Copy of Copy of Dataflow green](https://user-images.githubusercontent.com/31696336/80292024-1c984d00-8753-11ea-92d1-9880b7cc3c60.png)
+A dynamic approach makes it possible to easily add and/or edit functionalities, which keeps future possibilities open and helps to not condition the user into using certain systems. Because this tool is not specific to one game, it needs to be able to adapt to different projects and general changes in the industry. For example, an infinit amount of cycles can be created to change any parameter for any layer based on any value. 
 
 ### Layers
-The following diagram depicts the working of the layer classes. A layer can be a vertical looping layer or sound effect. The adaptable data that layers currently hold can be added to in the future, for a more dynamic procedural system.
-![PI_Concept-Copy of Copy of Dataflow green (1)](https://user-images.githubusercontent.com/31696336/80292056-684af680-8753-11ea-9617-b626d93414bb.png)
+The loaded audio is divided into vertical layers, to be played independently or over each other. A layer can be a vertical looping layer or sound effect. A layer holds data on how, when and what variation to play. It can for example choose out of an octave of piano notes, based on the melody generated.
+![PI_Concept-DataflowLayers](https://user-images.githubusercontent.com/31696336/80933592-b51e7500-8dc4-11ea-861b-302dd21ccde9.png)
+
+### Generating notes
+ `Layers` contain musical values, among which a *rythm* and a *tonal layer*. These rythms and melodys are used in the sequencer to trigger audiofiles. The rythm calls on what ticks audio needs to be played. The tonal layer decides what notes need to be played based on the `Layertype` (melody, countermelody, chord, percussion, etc) and the available samples within the layer. These notes are generated at initialisation and when a `Cycle` calls on them.
+![PI_Concept-DataflowMusicValues](https://user-images.githubusercontent.com/31696336/80933593-b5b70b80-8dc4-11ea-8d43-e501db04a7ff.png)
+
+
+### Cycles
+ A `Cycle` holds audiovalues to adapt, values to adapt to and what layers to adapt. Cycles can be triggered with game events using a `AdaptionMoment` or with the sequencer, using a `CycleTimer`. A `DynamicCycle` only adapts the activation of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random, in the future specific dynamic structures could be given and/or influenced by external parameters.
+![PI_Concept-DataflowCycles](https://user-images.githubusercontent.com/31696336/80933590-b51e7500-8dc4-11ea-8ff2-b0aca49807c4.png)
+
 
 ### General Dataflow
-![PI_Concept-Dataflow green](https://user-images.githubusercontent.com/31696336/80291955-6fbdd000-8752-11ea-9429-48b1b7a9ca80.png)
+![PI_Concept-DataflowComplete (1)](https://user-images.githubusercontent.com/31696336/80933589-b354b180-8dc4-11ea-9f22-79c06825a77c.png)
 
-## Current status
-The most important goals for this project are to improve the audio designing process by removing the obstructions in the workflow and allow for more experimentation, by making procedural systems easier to test.
+## Current status & improvements
+The main goal for this experiment is to research how to improve the audio designing process and encouraging experimentation by removing the obstructions in the workflow. 
 
-## Improvements
-The current MVP for N.A.D. has been reached. However, there still are a lot of features I want to add, such as:
-- DSP
-- priority system with ducking
-- template for receiving game parameters
-- how parameters need to be changed in cycles
-- dynamics system
-- randomisation
-- more info from input files
-- synthesis
-- less randomness and more algorythmic composition
-- general usability improvements
-- a visual respresentation such as in [N.A.D Visual Parameter Adaption in Unity](https://github.com/StijndeK/N.A.D.VisualParameterAdaption)
+ As this approach to nonlinear systems design has been tested extensively, the current MVP for this project have been achieved. However, the project could be further developed indefenitly. The most important features that I'd like to adress in the near future are:
+- [ ] easily being able to adapt every single parameter
+- [ ] (adapative) DSP
+- [ ] generative variations
+- [ ] AI to check if the audio is adapting well
+- [ ] a priority system with ducking
+- [ ] more eleborate dynamics system
+- [ ] probability
+- [ ] more info from input files
+- [ ] more intricate algorythms to generate data
+- [ ] a visual respresentation such as in [N.A.D Visual Parameter Adaption in Unity](https://github.com/StijndeK/N.A.D.VisualParameterAdaption)
 
 
