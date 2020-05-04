@@ -20,23 +20,23 @@ Procedural Audio System (working title) is the third experiment for my thesis ab
 To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. 
 
 ## Systems Design
-External gamedata is used to trigger and generate datacycles that change audiodata. These cycles set audio parameters for layers. Layers hold audiofiles and data on when and how to play. The `Sequencer` receives ticks from the `Clock` and checks the information of layers to trigger audiofiles. For a more intricate audiosystem the checking what to play and calling the sounds should be split to reduce the risk of delays.
+External gamedata is used to trigger and generate datacycles that change audiodata. These cycles set audio parameters for layers. Layers hold audiofiles and data on when and how to play. The `Sequencer` receives ticks from the `Clock` and checks the information of layers to trigger audiofiles. For a more intricate audiosystem, checking what to play and calling the sounds should be split to reduce the risk of delays.
 
 ![PI_Diagram](https://user-images.githubusercontent.com/31696336/80965632-2d138c00-8e13-11ea-9b8a-95dc09f23286.png)
 
-A dynamic approach makes it possible to easily add and/or edit functionalities, which keeps future possibilities open and helps to not condition the user into using certain systems. Because this tool is not specific to one game, it needs to be able to adapt to different projects and general changes in the industry. For example, an infinit amount of cycles can be created to change any parameter for any layer based on any value. 
+A modular approach makes it possible to easily add and/or edit functionalities, which keeps future possibilities open and helps to not condition the user into using certain systems. Because this tool is meant as a framework and is not specific to one game, it needs to be able to adapt to different projects and general changes in the industry/technology. For example, an infinit amount of cycles can be created to change any parameter for any layer based on any value. 
 
 ### Layers
-The loaded audio is divided into vertical layers, to be played independently or over each other. A layer can be a vertical looping layer or sound effect. A layer holds data on how, when and what variation to play. It can for example choose out of an octave of piano notes, based on the melody generated.
+The loaded audio is divided into vertical layers, to be played independently or over each other. A layer can be a vertical looping layer or sound effect. A layer holds data on how, when and what variation to play. 
 ![PI_Concept-DataflowLayers](https://user-images.githubusercontent.com/31696336/80933592-b51e7500-8dc4-11ea-861b-302dd21ccde9.png)
 
 ### Generating notes
- `Layers` contain musical values, among which a *rythm* and a *tonal layer*. These rythms and melodys are used in the sequencer to trigger audiofiles. The rythm calls on what ticks audio needs to be played. The tonal layer decides what notes need to be played based on the `Layertype` (melody, countermelody, chord, percussion, etc) and the available samples within the layer. These notes are generated at initialisation and when a `Cycle` calls on them.
+Layers contain musical values, among which a *rythm* and a *tonal layer*. These rythms and melodys are used in the sequencer to check what and when to play. The rythm calls on what ticks audio needs to be played. The tonal layer decides what notes need to be played based on the `Layertype` (melody, countermelody, chord, percussion, etc) and the available samples within the layer. The notes are generated at initialisation and when a `Cycle` calls on them.
 ![PI_Concept-DataflowMusicValues](https://user-images.githubusercontent.com/31696336/80933593-b5b70b80-8dc4-11ea-8d43-e501db04a7ff.png)
 
 
 ### Cycles
- A `Cycle` holds audiovalues to adapt, values to adapt to and what layers to adapt. Cycles can be triggered with game events using a `AdaptionMoment` or with the sequencer, using a `CycleTimer`. A `DynamicCycle` only adapts the activation of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random, in the future specific dynamic structures could be given and/or influenced by external parameters.
+ A `Cycle` holds audiovalues to adapt, values to adapt to and what layers to adapt. The only way to adapt audio data is by using a cycle. Cycles can be triggered with game events using a `AdaptionMoment` or from the sequencer, using a `CycleTimer`. A `DynamicCycle` only sets the on/off value of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random, in the future specific dynamic structures could be given and/or influenced by external parameters.
 ![PI_Concept-DataflowCycles](https://user-images.githubusercontent.com/31696336/80933590-b51e7500-8dc4-11ea-8ff2-b0aca49807c4.png)
 
 
@@ -46,8 +46,8 @@ The loaded audio is divided into vertical layers, to be played independently or 
 ## Current status & improvements
 The main goal for this experiment is to research how to improve the audio designing process and encouraging experimentation by removing the obstructions in the workflow. 
 
- As this approach to nonlinear systems design has been tested extensively, the current MVP for this project have been achieved. However, the project could be further developed indefenitly. The most important features that I'd like to adress in the near future are:
-- [ ] easily being able to adapt every single parameter
+As this approach to nonlinear systems design has been tested extensively, the current MVP for this project have been achieved. However, the project could be further developed indefenitly. The most important features that I'd like to adress in the near future are:
+- [ ] easily being able to adapt every single parameter. Probably by converting to C++ to use pointers.
 - [ ] (adapative) DSP
 - [ ] generative variations
 - [ ] AI to check if the audio is adapting well
