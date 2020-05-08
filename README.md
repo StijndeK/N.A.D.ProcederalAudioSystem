@@ -15,7 +15,7 @@ Procedural Audio System (working title) is the third experiment in a range of ex
 - [N.A.D Visual Parameter Adaption in Unity](https://github.com/StijndeK/N.A.D.VisualParameterAdaption)
 
 ## Unity and C#
-To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. Only the ProceduralAudio component needs to be placed in a scene. Everything else is done within the code.
+To allow for quick testing and implementing, PAS is written in C# for Unity. However, because PAS should serve as a general framework, PAS moves away from a component based Unity hierarchy and uses little to none unity specific elements. Only the ProceduralAudio component needs to be placed in a scene. 
 
 ## Systems Design
 External gamedata is used to trigger and generate `Cycles`. These `Cycles` set audio parameters for `Layers`. `Layers` hold audiofiles and data on when and how to play them. The `Sequencer` receives ticks from the `Clock` and checks the information of layers to trigger audiofiles. For a more intricate audiosystem, checking what to play and calling the sounds should be split to reduce the risk of delays.
