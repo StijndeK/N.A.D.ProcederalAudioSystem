@@ -1,5 +1,5 @@
 # N.A.D. Procedural Audio System
-PAS is a framework/tool designed to improve procedural music systems prototyping and implementing. Even though procedural sound design has become somewhat standard in gameaudio, I find procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
+PAS is a prototype framework/tool designed to improve procedural music systems prototyping and implementing. Even though procedural sound design has become somewhat standard in gameaudio, I find procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
 
 PAS is made as a general framework/tool, but is also used for and tested on 'Procedural Imagination'. A procedurally generated game world that dynamically responds to the player's actions. Currently being developed by [Josien Vos](http://josienvos.nl/).
 ![08 concept art 1](https://user-images.githubusercontent.com/31696336/80291854-857ec580-8751-11ea-884a-7a34bae40979.png)
