@@ -37,8 +37,6 @@ Layers contain musical values, among which a *rythm* and a *tonal layer*. These 
 
  In this example 2 cycles are created and given a Parameter. `Cycle1` is set to adapt the rythm and melody of layer 1. `Cycle2` is set to adapt the bpm based on data from the game. An adaption moment is then created and given the first cycle. The second cycle is set to adapt using a cycletimer from the sequencer.
 ```C#
-    public enum AdaptableParametersCycle { chordsAndScale, layerdata, rythmAndMelody, melody, bpm, onOff, dynamicCycleLayerAmount };
-
     PCycle cycle = new PCycle(new List<PParameter> { new PParameter(AdaptableParametersCycle.rythmAndMelody, null, new List<int> { 1 })}));
     PCycle cycle2 = new PCycle(new List<PParameter> { new PParameter(AdaptableParametersCycle.bpm, gamedata)});
 
