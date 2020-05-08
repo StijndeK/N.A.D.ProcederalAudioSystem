@@ -18,10 +18,12 @@ public class PAudioPlayer
         corSystem.getVersion(out version);
         corSystem.createChannelGroup("master", out channelgroup);
 
+        channelgroup.setVolume(0.5f);
+
         //DSP pLowPass;
         //corSystem.createDSPByType(DSP_TYPE.LOWPASS, out pLowPass);
-        //channelgroup.addDSP(0, pLowPass31212  124);
-        //pLowPass.setParameterFloat(0, 50.0f);
+        //channelgroup.addDSP(0, pLowPass);
+        //pLowPass.setParameterFloat(0, 1000.0f);
     }
 
     public static void Update()
@@ -47,8 +49,6 @@ public class PAudioPlayer
 
     public static void PlayFile(int layer, int soundIndex, bool reverse = false, bool oneshot = false)
     {
-        Channel channel;
-
         Sound sound = (oneshot) ? ProceduralAudio.oSLayers[layer].sounds[soundIndex] : ProceduralAudio.layers[layer].sounds[soundIndex];
 
         //if (reverse)
@@ -57,6 +57,6 @@ public class PAudioPlayer
         //    channel.setFrequency(0 - currentFq);
         //}
 
-        corSystem.playSound(sound, channelgroup, false, out channel);
+        corSystem.playSound(sound, channelgroup, false, out _);
     }
 }

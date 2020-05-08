@@ -15,6 +15,7 @@ public class ProceduralAudio : MonoBehaviour
     public enum LayerType { melody, countermelody, percussion, soundscape, chords, chords2 };
 
     // --- variables to set before running ---
+    // - parameters to adapt to
 
     // total number of looping layers and oneshots
     public static int amountOfLayers = 6;
