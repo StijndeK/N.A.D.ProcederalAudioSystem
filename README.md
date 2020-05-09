@@ -1,5 +1,5 @@
 # N.A.D. Procedural Audio System
-PAS is a prototype framework/tool designed to improve procedural music systems prototyping and implementing. Even though procedural sound design has become somewhat standard in gameaudio, I find procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
+PAS is a prototype for a framework/tool designed to improve procedural music systems prototyping and implementing. Even though procedural sound design has become somewhat standard in gameaudio, I find procedural music is still relatively underrepresented. It can be difficult to prototype, test and implement. PAS allows for quick testing and implementing procedural audio, using a sample-based sequencer. 
 
 PAS is made as a general framework/tool, but is also used for and tested on 'Procedural Imagination'. A procedurally generated game world that dynamically responds to the player's actions. Currently being developed by [Josien Vos](http://josienvos.nl/).
 ![08 concept art 1](https://user-images.githubusercontent.com/31696336/80291854-857ec580-8751-11ea-884a-7a34bae40979.png)
@@ -27,13 +27,13 @@ A modular approach makes it possible to easily add and/or edit functionalities, 
  [Click here](https://user-images.githubusercontent.com/31696336/80933589-b354b180-8dc4-11ea-9f22-79c06825a77c.png) for a more indepth dataflow overview.
 
 ### Layers
-The loaded audio is divided into vertical layers, to be played independently or over each other. A `Layer` can be a vertical looping layer or sound effect. A `Layer` holds data on how, when and what variation to play. 
+The loaded audio is divided into vertical layers, to be played independently or over each other. A `Layer` can consist of vertical loops or oneshot sound effects. A `Layer` holds data on how, when and what variation to play. 
 
 ### Generating notes
 Layers contain musical values, among which a *rythm* and a *tonal layer*. These rythms and melodys are used in the sequencer to check what and when to play. The rythm calls on what ticks audio needs to be played. The tonal layer decides what notes need to be played based on the `Layertype` (melody, countermelody, chord, percussion, etc) and the available samples within the layer. The notes are generated at initialisation and when a `Cycle` calls on them.
 
 ### Cycles
- A `Cycle` holds `Parameters` to adjust, that hold values to adjust, values to adjust to and what layers to adjust. Using a `Cycle` is the only way to adapt audiodata. `Cycles` can be triggered with game events using a `AdaptionMoment` or from the `Sequencer`, using a `CycleTimer`. A `DynamicCycle` only sets the on/off value of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random, in the future specific dynamic structures could be given and/or influenced by external parameters. This system is build so that any one parameter or game event can easily be linked to multiple aspects of audiodata. This prevents conditioning the user into using certain systems.
+ A `Cycle` holds `Parameters` to adjust, that hold values to adjust, values to adjust to and what layers to adjust. Using a `Cycle` is the only way to adapt audiodata. `Cycles` can be triggered with game events using a `AdaptionMoment` or from the `Sequencer`, using a `CycleTimer`. A `DynamicCycle` only sets the on/off value of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random. In the future specific dynamic structures could be given and/or influenced by external parameters. This system is build so that any one parameter or game event can easily be linked to multiple aspects of audiodata. This prevents conditioning the user into using certain systems.
 
  In this example 2 cycles are created and given a Parameter. `Cycle1` is set to adapt the rythm and melody of layer 1. `Cycle2` is set to adapt the bpm based on data from the game. An adaption moment is then created and given the first cycle. The second cycle is set to adapt using a cycletimer from the sequencer.
 ```C#
@@ -46,7 +46,7 @@ Layers contain musical values, among which a *rythm* and a *tonal layer*. These 
 ```
 
 ## Current status & improvements
-The most important goal for this experiment is to research how to improve the audio designing process and encouraging experimentation by removing the obstructions in the workflow. As this approach to nonlinear systems design has been tested extensively, the current MVP for this project have been achieved. However, the project could be further developed indefenitly. The most important features that I'd like to adress in the near future are:
+The most important goal for this experiment is to research how to improve the audio designing process and encouraging experimentation by removing the obstructions in the workflow. The current MVP for this project have been achieved. However, the project could be further developed indefenitly. The most important features that I'd like to adress in the near future are:
 - [ ] easily being able to adapt every single parameter. Probably by converting to C++ to use pointers.
 - [ ] (adapative) DSP
 - [ ] generative variations
