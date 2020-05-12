@@ -35,13 +35,16 @@ Layers contain musical values, among which a *rythm* and a *tonal layer*. These 
 ### Cycles
  A `Cycle` holds `Parameters` to adjust, that hold values to adjust, values to adjust to and what layers to adjust. Using a `Cycle` is the only way to adapt audiodata. `Cycles` can be triggered with game events using a `AdaptionMoment` or from the `Sequencer`, using a `CycleTimer`. A `DynamicCycle` only sets the on/off value of layers, using a `CycleTimer` the `DynamicCycle` can create a natural sounding buildup. For now this buildup is mostly random. In the future specific dynamic structures could be given and/or influenced by external parameters. This system is build so that any one parameter or game event can easily be linked to multiple aspects of audiodata. This prevents conditioning the user into using certain systems.
 
- In this example 2 cycles are created and given a Parameter. `Cycle1` is set to adapt the rythm and melody of layer 1. `Cycle2` is set to adapt the bpm based on data from the game. An adaption moment is then created and given the first cycle. The second cycle is set to adapt using a cycletimer from the sequencer.
 ```C#
+    // create a cycle to adapt the rythm and melody of layer 1
     PCycle cycle = new PCycle(new List<PParameter> { new PParameter(AdaptableParametersCycle.rythmAndMelody, null, new List<int> { 1 })}));
+    // create a cycle to adapt bpm based on gamedata
     PCycle cycle2 = new PCycle(new List<PParameter> { new PParameter(AdaptableParametersCycle.bpm, gamedata)});
 
+    // give the first cycle an adaptionmoment to link to gamevents
     PAdaptionMoment adaptionMoment = new PAdaptionMoment(new List<PCycle> {cycle});
 
+    // set cycle 2 to adapt with a timer
     PCycleTime timer = new PCycleTimer(cycle2);
 ```
 
